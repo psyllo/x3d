@@ -1,4 +1,5 @@
-#define BOOST_LOG_DYN_LINK 1
+#define BOOST_LOG_DYN_LINK 1 // TODO
+
 #include "../config.h"
 #include <unistd.h>      /* pause() */
 #include <stdlib.h>
@@ -27,8 +28,10 @@ bool init() {
 
   x3d_screen = X3dScreenFactory::createScreen();
   if(!x3d_screen->init()) {
-    // BOOST_LOG_TRIVIAL(fatal) << "X3dScreen init failed";
+    BOOST_LOG_TRIVIAL(fatal) << "X3dScreen init failed";
     exit(EXIT_FAILURE);
+  }else{
+    result = true;
   }
 
   return result;

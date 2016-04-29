@@ -1,3 +1,5 @@
+#define BOOST_LOG_DYN_LINK 1 // TODO
+
 #include <X3dScreenX11.h>
 #include <iostream>
 #include <boost/log/trivial.hpp>
@@ -16,12 +18,12 @@ bool X3dScreenX11::init() {
   window = xcb_generate_id(connection);
   screen = xcb_setup_roots_iterator(xcb_get_setup(connection)).data;
   initialized = true;
-  return true;
+  return initialized;
 }
 
 bool X3dScreenX11::open() {
   if(!initialized) {
-    // BOOST_LOG_TRIVIAL(error) << "uninitialized";
+    BOOST_LOG_TRIVIAL(error) << "uninitialized";
     return false;
   }
   /* Create the window */
@@ -46,7 +48,7 @@ bool X3dScreenX11::open() {
 
 bool X3dScreenX11::close() {
   if(!initialized) {
-    // BOOST_LOG_TRIVIAL(error) << "uninitialized";
+    BOOST_LOG_TRIVIAL(error) << "uninitialized";
     return false;
   }
   xcb_disconnect(connection);

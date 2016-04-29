@@ -6,7 +6,7 @@
 
 class X3dScreen {
  public:
-  X3dScreen();
+  X3dScreen() {}
   virtual ~X3dScreen() {}
   virtual bool init() {return false;}
   virtual bool open() {return false;}
