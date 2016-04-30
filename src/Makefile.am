@@ -1,5 +1,5 @@
 bin_PROGRAMS = demo
-demo_SOURCES = X3dScreen.h X3dScreen.cpp X3dScreenX11.h X3dScreenX11.cpp X3dScreenFactory.h X3dScreenFactory.cpp main.cpp
+demo_SOURCES = Screen.h Screen.cpp ScreenX11.h ScreenX11.cpp ScreenFactory.h ScreenFactory.cpp main.cpp
 demo_CPPFLAGS = $(PTHREAD_CFLAGS) $(CPPFLAGS)
 demo_CFLAGS =  $(PTHREAD_CFLAGS) $(X11_CFLAGS) $(XCB_CFLAGS) $(CFLAGS)
 

@@ -7,7 +7,7 @@
 #include <iostream>
 #include <X11/Xlib.h>
 #include <xcb/xcb.h>
-#include <X3dScreenFactory.h>
+#include <ScreenFactory.hpp>
 #include <boost/log/trivial.hpp>
 
 using std::cout;
@@ -18,7 +18,7 @@ const int WINDOW_HEIGHT = 480;
 
 // Main loop flag
 bool quit = false;
-X3dScreen* x3d_screen;
+x3d::Screen* x3d_screen;
 
 /*
   https://xcb.freedesktop.org/tutorial/basicwindowsanddrawing/
@@ -26,9 +26,9 @@ X3dScreen* x3d_screen;
 bool init() {
   bool result = false;
 
-  x3d_screen = X3dScreenFactory::createScreen();
+  x3d_screen = x3d::ScreenFactory::createScreen();
   if(!x3d_screen->init()) {
-    BOOST_LOG_TRIVIAL(fatal) << "X3dScreen init failed";
+    BOOST_LOG_TRIVIAL(fatal) << "Screen init failed";
     exit(EXIT_FAILURE);
   }else{
     result = true;
