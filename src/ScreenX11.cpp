@@ -9,6 +9,17 @@ namespace x3d {
 
   bool ScreenX11::init() {
     if(_initialized) return false;
+
+    /* Open the connection to the X server */
+    connection = xcb_connect(NULL, NULL);
+
+    /* Get the first screen */
+    {
+      const xcb_setup_t*      setup  = xcb_get_setup(connection);
+      xcb_screen_iterator_t   iter   = xcb_setup_roots_iterator(setup);
+      screen = iter.data;
+    }
+
     connection = xcb_connect(NULL, NULL);
     window = xcb_generate_id(connection);
     screen = xcb_setup_roots_iterator(xcb_get_setup(connection)).data;
@@ -32,9 +43,9 @@ namespace x3d {
                       10,                            /* border_width        */
                       XCB_WINDOW_CLASS_INPUT_OUTPUT, /* class               */
                       screen->root_visual,           /* visual              */
-                      0, NULL);                      /* masks, not used yet */
+                      mask, value_list);             /* masks, value_list */
 
-    /* Map the window on the screen and flush*/
+    /* Map the window on the screen and flush */
     xcb_map_window(connection, window);
     xcb_flush(connection);
     return true;

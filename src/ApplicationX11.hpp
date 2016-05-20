@@ -16,7 +16,6 @@ namespace x3d {
     //xcb_window_t window;               // X11: Window TODO: xcb equiv
 
     virtual void createWindow();
-    //virtual void ask_to_be_notified_of_interesting_events(void);
     virtual void eventLoop();
 
   public:

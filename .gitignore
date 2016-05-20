@@ -24,3 +24,4 @@ build-aux
 aclocal.m4
 .dirstamp
 src/demo
+test/testall

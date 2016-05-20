@@ -14,7 +14,7 @@ using std::endl;
 
 int main(int argc, char* args[]) {
   x3d::FactoryManager fm;
-  std::shared_ptr<x3d::Application> app(fm.getApplicationFactory()->create());
+  std::unique_ptr<x3d::Application> app(fm.getApplicationFactory()->create());
   app->execute();
 
   return 0;

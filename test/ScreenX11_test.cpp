@@ -7,7 +7,12 @@
 
 using namespace x3d;
 
-TEST_CASE("ScreenX11 basics", "[x11]") {
+TEST_CASE("ScreenX11 init-open-close", "[x11]") {
   ScreenX11 screen;
-  REQUIRE(screen.init());
+  // TODO: screen.setValueMask();
+  // TODO: screen.setValueList();
+  bool init_ok = screen.init();
+  REQUIRE(init_ok);
+  REQUIRE(screen.open());
+  REQUIRE(screen.close());
 }
