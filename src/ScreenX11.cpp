@@ -1,30 +1,23 @@
 #define BOOST_LOG_DYN_LINK 1 // TODO
+#include "../config.h"
 
-#include <ScreenX11.hpp>
+#include "ScreenX11.hpp"
 #include <iostream>
 #include <boost/log/trivial.hpp>
 
 namespace x3d {
 
-  ScreenX11::ScreenX11() : Screen() {
-  
-  }
-
-  ScreenX11::~ScreenX11() {
-  
-  }
-
   bool ScreenX11::init() {
-    if(initialized) return true;
+    if(_initialized) return false;
     connection = xcb_connect(NULL, NULL);
     window = xcb_generate_id(connection);
     screen = xcb_setup_roots_iterator(xcb_get_setup(connection)).data;
-    initialized = true;
-    return initialized;
+    _initialized = true;
+    return _initialized;
   }
 
   bool ScreenX11::open() {
-    if(!initialized) {
+    if(!_initialized) {
       BOOST_LOG_TRIVIAL(error) << "uninitialized";
       return false;
     }
@@ -39,7 +32,7 @@ namespace x3d {
                       10,                            /* border_width        */
                       XCB_WINDOW_CLASS_INPUT_OUTPUT, /* class               */
                       screen->root_visual,           /* visual              */
-                      0, NULL );                     /* masks, not used yet */
+                      0, NULL);                      /* masks, not used yet */
 
     /* Map the window on the screen and flush*/
     xcb_map_window(connection, window);
@@ -49,7 +42,7 @@ namespace x3d {
 
 
   bool ScreenX11::close() {
-    if(!initialized) {
+    if(!_initialized) {
       BOOST_LOG_TRIVIAL(error) << "uninitialized";
       return false;
     }

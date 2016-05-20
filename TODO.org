@@ -1,0 +1,2 @@
+* Added #ifndef __X3D_<HEADER_NAME> to all headers
+* Replace raw pointers with unique_ptr/shared_ptr

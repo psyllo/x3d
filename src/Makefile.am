@@ -1,5 +1,11 @@
 bin_PROGRAMS = demo
-demo_SOURCES = Screen.h Screen.cpp ScreenX11.h ScreenX11.cpp ScreenFactory.h ScreenFactory.cpp main.cpp
+demo_SOURCES = main.cpp ScreenX11.cpp ScreenX11.hpp			\
+FactoryManager.hpp Pipeline.hpp DispatcherX11.cpp Application.hpp	\
+ApplicationFactoryX11.cpp EventSource.hpp ApplicationX11.hpp		\
+ApplicationX11.cpp ApplicationFactory.hpp DispatcherX11.hpp		\
+PipelineImpl.cpp PipelineImpl.hpp Dispatcher.hpp			\
+ApplicationFactoryX11.hpp Screen.hpp FactoryManager.cpp
+
 demo_CPPFLAGS = $(PTHREAD_CFLAGS) $(CPPFLAGS)
 demo_CFLAGS =  $(PTHREAD_CFLAGS) $(X11_CFLAGS) $(XCB_CFLAGS) $(CFLAGS)
 

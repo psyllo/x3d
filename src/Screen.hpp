@@ -1,18 +1,16 @@
 #ifndef __X3D_SCREEN_H
 #define __X3D_SCREEN_H
 
-
-#include <cstdlib>
+#include "EventSource.hpp"
 
 namespace x3d {
   
-  class Screen {
+  class Screen : public EventSource {
   public:
-    Screen() {}
     virtual ~Screen() {}
-    virtual bool init() {return false;}
-    virtual bool open() {return false;}
-    virtual bool close() {return false;}
+    virtual bool init() = 0;
+    virtual bool open() = 0;
+    virtual bool close() = 0;
   };
 }
 
