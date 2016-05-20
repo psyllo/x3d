@@ -1,2 +1,2 @@
 ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS} -I m4
-SUBDIRS = src
+SUBDIRS = src test
