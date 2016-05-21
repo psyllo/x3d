@@ -12,6 +12,7 @@
 namespace x3d {
 
   /*
+    TODO: C++-ize this
     print names of modifiers present in mask
     code from: https://xcb.freedesktop.org/tutorial/events/
   */

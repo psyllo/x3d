@@ -38,12 +38,12 @@ namespace x3d {
                       XCB_COPY_FROM_PARENT,          /* depth (same as root)*/
                       window,                        /* window Id           */
                       screen->root,                  /* parent window       */
-                      0, 0,                          /* x, y                */
-                      150, 150,                      /* width, height       */
-                      10,                            /* border_width        */
+                      screen_x, screen_y,            /* x, y                */
+                      screen_w, screen_h,            /* width, height       */
+                      border_width,                  /* border_width        */
                       XCB_WINDOW_CLASS_INPUT_OUTPUT, /* class               */
                       screen->root_visual,           /* visual              */
-                      mask, value_list);             /* masks, value_list */
+                      mask, value_list);             /* masks, value_list   */
 
     /* Map the window on the screen and flush */
     xcb_map_window(connection, window);

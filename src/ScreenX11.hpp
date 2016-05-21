@@ -18,10 +18,14 @@ namespace x3d {
     xcb_connection_t* connection;
     xcb_window_t window;
     xcb_screen_t* screen;
+    int16_t screen_x, screen_y;
+    uint16_t screen_w, screen_h;
+    uint16_t border_width;
 
   public:
     ScreenX11()
-      : _initialized(false), connection(NULL), screen(NULL), mask(0)
+      : _initialized(false), connection(NULL), screen(NULL), mask(0),
+        screen_x(0), screen_y(0), screen_w(0), screen_h(0), border_width(0)
     { }
     virtual ~ScreenX11() {}
     virtual bool init();
@@ -30,6 +34,16 @@ namespace x3d {
     xcb_connection_t* getConnection() { return connection; }
     xcb_window_t* getWindow() { return &window; }
     xcb_screen_t* getXCBscreen() { return screen; };
+    int16_t getX() { return screen_x; }
+    void setX(int16_t X) { screen_x = X; }
+    int16_t getY() { return screen_y; }
+    void setY(int16_t Y) { screen_y = Y; }
+    uint16_t getWidth() { return screen_w; }
+    void setWidth(uint16_t W) { screen_w = W; }
+    uint16_t getHeight() { return screen_h; }
+    void setHeight(uint16_t H) { screen_h = H; }
+    uint16_t getBorderWidth() { return border_width; }
+    void setBorderWidth(uint16_t W) { border_width = W; }
 
     // uint32_t getValueMask() { return mask; }
     // void setValueMask(uint32_t valuemask) { mask = valuemask; }
@@ -37,7 +51,6 @@ namespace x3d {
     // uint32_t getValueListFor(uint index) { return value_list[index]; }
     // void setValueListFor(uint index, uint32_t value) {
     //   value_list[index] = value;
-    //   // TODO REMOVE ME IF NOT USING: value_list.reset(valuelist, std::default_delete<uint32_t[]>());
     // }
 
     uint32_t mask;
@@ -58,7 +71,6 @@ namespace x3d {
        XCB_CW_COLORMAP          = 1L<<13,
        XCB_CW_CURSOR            = 1L<<14
      */
-    //std::shared_ptr<uint32_t> value_list;
     static const uint32_t VALUE_LIST_SIZE = 20;
     uint32_t value_list[VALUE_LIST_SIZE] = {0}; // TODO: all zeroed per C++ spec AFAIK
     // TODO: consider using uint32_t[hard_coded_number]
