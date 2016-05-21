@@ -1,10 +1,10 @@
-#ifndef __X3D_SCREEN_H
-#define __X3D_SCREEN_H
+#ifndef __X3D_SCREEN_HPP
+#define __X3D_SCREEN_HPP
 
 #include "EventSource.hpp"
 
 namespace x3d {
-  
+
   class Screen : public EventSource {
   public:
     virtual ~Screen() {}

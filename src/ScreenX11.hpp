@@ -1,5 +1,5 @@
-#ifndef __X3D_SCREEN_X11_H
-#define __X3D_SCREEN_X11_H
+#ifndef __X3D_SCREENX11_HPP
+#define __X3D_SCREENX11_HPP
 
 #include <Screen.hpp>
 
@@ -24,7 +24,7 @@ namespace x3d {
 
   public:
     ScreenX11()
-      : _initialized(false), connection(NULL), screen(NULL), mask(0),
+      : _initialized(false), connection(NULL), screen(NULL), value_mask(0),
         screen_x(0), screen_y(0), screen_w(0), screen_h(0), border_width(0)
     { }
     virtual ~ScreenX11() {}
@@ -53,7 +53,7 @@ namespace x3d {
     //   value_list[index] = value;
     // }
 
-    uint32_t mask;
+    uint32_t value_mask;
     /* possible mask values (see: typedef enum xcb_cw_t)
        XCB_CW_BACK_PIXMAP       = 1L<<0,
        XCB_CW_BACK_PIXEL        = 1L<<1,
@@ -110,7 +110,7 @@ namespace x3d {
 
     void updateWindowAttributes() {
       // TODO: write unit test
-      xcb_change_window_attributes(connection, window, mask, value_list);
+      xcb_change_window_attributes(connection, window, value_mask, value_list);
     }
 
   };

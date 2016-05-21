@@ -1,5 +1,5 @@
-#ifndef __DISPATCHER_HPP
-#define __DISPATCHER_HPP
+#ifndef __X3D_DISPATCHER_HPP
+#define __X3D_DISPATCHER_HPP
 
 #include <Pipeline.hpp>
 #include <EventSource.hpp>

@@ -1,3 +1,6 @@
+#ifndef __X3D_PIPELINEIMPL_HPP
+#define __X3D_PIPELINEIMPL_HPP
+
 #include <Pipeline.hpp>
 
 namespace x3d {
@@ -13,3 +16,5 @@ namespace x3d {
     virtual bool isDone() { return _done; }
   };
 }
+
+#endif

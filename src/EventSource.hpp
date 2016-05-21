@@ -1,5 +1,5 @@
-#ifndef __EVENTSOURCE_HPP
-#define __EVENTSOURCE_HPP
+#ifndef __X3D_EVENTSOURCE_HPP
+#define __X3D_EVENTSOURCE_HPP
 
 namespace x3d {
 

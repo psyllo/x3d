@@ -1,5 +1,9 @@
-#ifndef __FACTORYMANAGER_HPP
-#define __FACTORYMANAGER_HPP
+#ifndef __X3D_FACTORYMANAGER_HPP
+#define __X3D_FACTORYMANAGER_HPP
+
+/*
+  Synopsis: Generate any factory from this class.
+ */
 
 #include <ApplicationFactoryX11.hpp>
 #include <memory>

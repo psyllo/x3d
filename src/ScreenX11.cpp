@@ -27,6 +27,9 @@ namespace x3d {
     return _initialized;
   }
 
+  /*
+    See: https://xcb.freedesktop.org/tutorial/basicwindowsanddrawing/
+   */
   bool ScreenX11::open() {
     if(!_initialized) {
       BOOST_LOG_TRIVIAL(error) << "uninitialized";
@@ -43,7 +46,7 @@ namespace x3d {
                       border_width,                  /* border_width        */
                       XCB_WINDOW_CLASS_INPUT_OUTPUT, /* class               */
                       screen->root_visual,           /* visual              */
-                      mask, value_list);             /* masks, value_list   */
+                      value_mask, value_list);       /* masks, value_list   */
 
     /* Map the window on the screen and flush */
     xcb_map_window(connection, window);

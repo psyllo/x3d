@@ -12,7 +12,7 @@
 namespace x3d {
 
   /*
-    TODO: C++-ize this
+    TODO: C++-ize this (or just delete it)
     print names of modifiers present in mask
     code from: https://xcb.freedesktop.org/tutorial/events/
   */
@@ -44,32 +44,95 @@ namespace x3d {
     // allocated structure (which is your responsibility to free). May
     // return NULL in event of an error.
     while(!pipeline->isDone() && (event = xcb_wait_for_event(connection))) {
-      std::cerr << event->response_type << " "
-                <<  (event->response_type == XCB_EXPOSE)
-                << std::endl;
+
       switch(event->response_type & ~0x80) {
-      case XCB_EXPOSE:
-        pipeline->updateEvent();
-        pipeline->drawEvent();
 
-        /* flush the request */
-        xcb_flush(connection);
+      case XCB_EXPOSE: {
+        xcb_expose_event_t *expose = (xcb_expose_event_t *)event;
 
+        printf ("Window %"PRIu32" exposed. Region to be redrawn at location (%"PRIu16",%"PRIu16"), with dimension (%"PRIu16",%"PRIu16")\n",
+                expose->window, expose->x, expose->y, expose->width, expose->height );
         break;
+      }
+      case XCB_BUTTON_PRESS: {
+        xcb_button_press_event_t *bp = (xcb_button_press_event_t *)event;
+        print_modifiers (bp->state);
+
+        switch (bp->detail) {
+        case 4:
+          printf ("Wheel Button up in window %"PRIu32", at coordinates (%"PRIi16",%"PRIi16")\n",
+                  bp->event, bp->event_x, bp->event_y );
+          break;
+        case 5:
+          printf ("Wheel Button down in window %"PRIu32", at coordinates (%"PRIi16",%"PRIi16")\n",
+                  bp->event, bp->event_x, bp->event_y );
+          break;
+        default:
+          printf ("Button %"PRIu8" pressed in window %"PRIu32", at coordinates (%"PRIi16",%"PRIi16")\n",
+                  bp->detail, bp->event, bp->event_x, bp->event_y );
+          break;
+        }
+        break;
+      }
+      case XCB_BUTTON_RELEASE: {
+        xcb_button_release_event_t *br = (xcb_button_release_event_t *)event;
+        print_modifiers(br->state);
+
+        printf ("Button %"PRIu8" released in window %"PRIu32", at coordinates (%"PRIi16",%"PRIi16")\n",
+                br->detail, br->event, br->event_x, br->event_y );
+        break;
+      }
+      case XCB_MOTION_NOTIFY: {
+        xcb_motion_notify_event_t *motion = (xcb_motion_notify_event_t *)event;
+
+        printf ("Mouse moved in window %"PRIu32", at coordinates (%"PRIi16",%"PRIi16")\n",
+                motion->event, motion->event_x, motion->event_y );
+        break;
+      }
+      case XCB_ENTER_NOTIFY: {
+        xcb_enter_notify_event_t *enter = (xcb_enter_notify_event_t *)event;
+
+        printf ("Mouse entered window %"PRIu32", at coordinates (%"PRIi16",%"PRIi16")\n",
+                enter->event, enter->event_x, enter->event_y );
+        break;
+      }
+      case XCB_LEAVE_NOTIFY: {
+        xcb_leave_notify_event_t *leave = (xcb_leave_notify_event_t *)event;
+
+        printf ("Mouse left window %"PRIu32", at coordinates (%"PRIi16",%"PRIi16")\n",
+                leave->event, leave->event_x, leave->event_y );
+        break;
+      }
+      case XCB_KEY_PRESS: {
+        xcb_key_press_event_t *kp = (xcb_key_press_event_t *)event;
+        print_modifiers(kp->state);
+
+        printf ("Key pressed in window %"PRIu32"\n",
+                kp->event);
+        break;
+      }
       case XCB_KEY_RELEASE: {
         xcb_key_release_event_t *kr = (xcb_key_release_event_t *)event;
         print_modifiers(kr->state);
 
-        printf("Key released in window %"PRIu32"\n",
-               kr->event);
+        printf ("Key released in window %"PRIu32"\n",
+                kr->event);
         break;
       }
       default:
         /* Unknown event type, ignore it */
-        printf("Unknown event: %"PRIu8"\n",
-               event->response_type);
+        printf ("Unknown event: %"PRIu8"\n",
+                event->response_type);
         break;
       }
+
+      pipeline->updateEvent();
+      pipeline->drawEvent();
+
+      /* flush the request */
+      xcb_flush(connection);
+      // NOTE: int xcb_aux_sync(xcb_connection_t *c) is the blocking version
+
       free(event);
     }
   }

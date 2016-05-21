@@ -1,6 +1,10 @@
 #ifndef __X3D_PIPELINE_HPP
 #define __X3D_PIPELINE_HPP
 
+/*
+  Your application should inherit this class
+ */
+
 namespace x3d {
   class Pipeline {
   public:

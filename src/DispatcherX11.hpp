@@ -1,5 +1,9 @@
-#ifndef __DISPATCHERX11_HPP
-#define __DISPATCHERX11_HPP
+#ifndef __X3D_DISPATCHERX11_HPP
+#define __X3D_DISPATCHERX11_HPP
+
+/*
+  Forms the connnection between Pipleline and incoming X events
+ */
 
 #include "Dispatcher.hpp"
 #include "ScreenX11.hpp"

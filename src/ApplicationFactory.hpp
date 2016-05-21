@@ -1,5 +1,5 @@
-#ifndef __APPLICATIONFACTORY_HPP
-#define __APPLICATIONFACTORY_HPP
+#ifndef __X3D_APPLICATIONFACTORY_HPP
+#define __X3D_APPLICATIONFACTORY_HPP
 
 #include "Application.hpp"
 
