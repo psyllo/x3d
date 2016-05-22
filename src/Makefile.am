@@ -14,6 +14,8 @@ FactoryManager.hpp \
 PipelineDemo.cpp \
 PipelineDemo.hpp \
 Pipeline.hpp \
+Rasterizer.hpp \
+Rasterizer.cpp \
 ScreenFactory.hpp \
 Screen.hpp \
 ScreenX11.cpp \
