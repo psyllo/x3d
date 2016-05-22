@@ -1,8 +1,8 @@
 #ifndef __X3D_DISPATCHER_HPP
 #define __X3D_DISPATCHER_HPP
 
-#include <Pipeline.hpp>
-#include <EventSource.hpp>
+#include "Pipeline.hpp"
+#include "EventSource.hpp"
 
 namespace x3d {
 
@@ -11,6 +11,8 @@ namespace x3d {
     Pipeline* pipeline;
     EventSource* event_source;
   public:
+    Dispatcher() {
+    }
     Dispatcher(Pipeline* pipeline, EventSource* event_source)
       : pipeline(pipeline), event_source(event_source) {
     }

@@ -4,7 +4,6 @@
 namespace x3d {
   class Application {
   public:
-    virtual ~Application() {}
     virtual void execute() = 0;
   };
 }

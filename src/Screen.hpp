@@ -7,7 +7,6 @@ namespace x3d {
 
   class Screen : public EventSource {
   public:
-    virtual ~Screen() {}
     virtual bool init() = 0;
     virtual bool open() = 0;
     virtual bool close() = 0;

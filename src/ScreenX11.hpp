@@ -1,7 +1,7 @@
 #ifndef __X3D_SCREENX11_HPP
 #define __X3D_SCREENX11_HPP
 
-#include <Screen.hpp>
+#include "ScreenFactory.hpp"
 
 #include <memory>
 #include <xcb/xcb.h>
@@ -27,7 +27,7 @@ namespace x3d {
       : _initialized(false), connection(NULL), screen(NULL), value_mask(0),
         screen_x(0), screen_y(0), screen_w(0), screen_h(0), border_width(0)
     { }
-    virtual ~ScreenX11() {}
+    virtual ~ScreenX11() { /* TODO */ }
     virtual bool init();
     virtual bool open();
     virtual bool close();
@@ -113,6 +113,14 @@ namespace x3d {
       xcb_change_window_attributes(connection, window, value_mask, value_list);
     }
 
+  };
+
+  /*
+    Factory
+   */
+  class ScreenFactoryX11 : public ScreenFactory {
+  public:
+    Screen* create() { return new ScreenX11; }
   };
 
 }

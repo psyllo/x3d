@@ -5,7 +5,7 @@
 
 #include "DispatcherX11.hpp"
 #include "ScreenX11.hpp"
-#include "PipelineImpl.hpp"
+#include "PipelineDemo.hpp" // TODO: hard-coded for demo
 #include <boost/log/trivial.hpp>
 #include <memory>
 #include <cassert>
@@ -73,7 +73,8 @@ namespace x3d {
   }
 
   void ApplicationX11::eventLoop() {
-    DispatcherX11 dispatcher(new PipelineImpl, screen);
+    // TODO: hard-coded pipeline instantiation for demo
+    DispatcherX11 dispatcher(new PipelineDemo, screen);
     dispatcher.start();
   }
 

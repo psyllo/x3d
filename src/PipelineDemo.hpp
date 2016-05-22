@@ -1,13 +1,13 @@
-#ifndef __X3D_PIPELINEIMPL_HPP
-#define __X3D_PIPELINEIMPL_HPP
+#ifndef __X3D_PIPELINEDEMO_HPP
+#define __X3D_PIPELINEDEMO_HPP
 
-#include <Pipeline.hpp>
+#include "Pipeline.hpp"
 
 namespace x3d {
-  class PipelineImpl : public Pipeline {
+  class PipelineDemo : public Pipeline {
     bool _done;
   public:
-    PipelineImpl() : _done(false) {
+    PipelineDemo() : _done(false) {
     }
     virtual void drawEvent();
     virtual void updateEvent();
