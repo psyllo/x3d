@@ -1,6 +1,12 @@
 #ifndef __X3D_SCREENX11_HPP
 #define __X3D_SCREENX11_HPP
 
+/*
+  XCB uses <cstdint> types such as uint16_t, but our X3D uses standard
+  C++ types. So for example instead of uint16_t we use unsigned short.
+  See: http://en.cppreference.com/w/cpp/language/types
+ */
+
 #include "Screen.hpp"
 
 #include <memory>
@@ -18,17 +24,25 @@ namespace x3d {
     xcb_connection_t* connection;
     xcb_window_t window;
     xcb_screen_t* screen;
-    int16_t screen_x, screen_y;
-    uint16_t screen_w, screen_h;
-    uint16_t border_width;
+    short screen_x, screen_y;
+    unsigned short screen_w, screen_h;
+    unsigned short border_width;
     ScreenInfo* info;
     Polygon2D* view_win;
 
   public:
-    ScreenX11()
-      : _initialized(false), connection(NULL), screen(NULL), value_mask(0),
-        screen_x(0), screen_y(0), screen_w(0), screen_h(0), border_width(0),
-        info(NULL)
+    ScreenX11() : ScreenX11(default_screen_w, default_screen_h) { }
+    ScreenX11(unsigned short screen_width, unsigned short screen_height)
+      : _initialized(false),
+        border_width(0),
+        connection(NULL),
+        info(NULL),
+        screen(NULL),
+        screen_h(screen_height),
+        screen_w(screen_width),
+        screen_x(0),
+        screen_y(0),
+        value_mask(0)
     { }
     virtual ~ScreenX11() { /* TODO */ }
     virtual bool init();
@@ -38,28 +52,28 @@ namespace x3d {
     xcb_connection_t* getXCBConnection() { return connection; } // TODO: breaks good abstraction
     xcb_window_t* getXCBWindow() { return &window; } // TODO: breaks good abstraction
     xcb_screen_t* getXCBscreen() { return screen; }; // TODO: breaks good abstraction
-    int16_t getX() { return screen_x; }
-    void setX(int16_t X) { screen_x = X; }
-    int16_t getY() { return screen_y; }
-    void setY(int16_t Y) { screen_y = Y; }
-    uint16_t getWidth() { return screen_w; }
-    void setWidth(uint16_t W) { screen_w = W; }
-    uint16_t getHeight() { return screen_h; }
-    void setHeight(uint16_t H) { screen_h = H; }
-    uint16_t getBorderWidth() { return border_width; }
-    void setBorderWidth(uint16_t W) { border_width = W; }
+    short getX() { return screen_x; }
+    void setX(short X) { screen_x = X; }
+    short getY() { return screen_y; }
+    void setY(short Y) { screen_y = Y; }
+    unsigned short getWidth() { return screen_w; }
+    void setWidth(unsigned short W) { screen_w = W; }
+    unsigned short getHeight() { return screen_h; }
+    void setHeight(unsigned short H) { screen_h = H; }
+    unsigned short getBorderWidth() { return border_width; }
+    void setBorderWidth(unsigned short W) { border_width = W; }
     ScreenInfo* getInfo() { return info; }
     Polygon2D* getViewWin() { return view_win; }
 
-    // uint32_t getValueMask() { return mask; }
-    // void setValueMask(uint32_t valuemask) { mask = valuemask; }
-    // uint32_t* getValueList() { return value_list; }
-    // uint32_t getValueListFor(uint index) { return value_list[index]; }
-    // void setValueListFor(uint index, uint32_t value) {
+    // unsigned int getValueMask() { return mask; }
+    // void setValueMask(unsigned int valuemask) { mask = valuemask; }
+    // unsigned int* getValueList() { return value_list; }
+    // unsigned int getValueListFor(uint index) { return value_list[index]; }
+    // void setValueListFor(uint index, unsigned int value) {
     //   value_list[index] = value;
     // }
 
-    uint32_t value_mask;
+    unsigned int value_mask;
     /* possible mask values (see: typedef enum xcb_cw_t)
        XCB_CW_BACK_PIXMAP       = 1L<<0,
        XCB_CW_BACK_PIXEL        = 1L<<1,
@@ -77,9 +91,8 @@ namespace x3d {
        XCB_CW_COLORMAP          = 1L<<13,
        XCB_CW_CURSOR            = 1L<<14
      */
-    static const uint32_t VALUE_LIST_SIZE = 20;
-    uint32_t value_list[VALUE_LIST_SIZE] = {0}; // TODO: verify all zeroed (per C++ spec AFAIK)
-    // TODO: consider using uint32_t[hard_coded_number]
+    static const unsigned int VALUE_LIST_SIZE = 20;
+    unsigned int value_list[VALUE_LIST_SIZE] = {0}; // TODO: verify all zeroed (per C++ spec AFAIK)
     // Order of values in value list much follow order in xcb_cw_t enum.
     //
     // Events:
@@ -114,6 +127,9 @@ namespace x3d {
     //     XCB_EVENT_MASK_OWNER_GRAB_BUTTON = 16777216
     // } xcb_event_mask_t;
 
+    static const unsigned short default_screen_w = 640;
+    static const unsigned short default_screen_h = 480;
+
     void updateWindowAttributes() {
       // TODO: write unit test
       xcb_change_window_attributes(connection, window, value_mask, value_list);
@@ -126,7 +142,8 @@ namespace x3d {
    */
   class ScreenFactoryX11 : public ScreenFactory {
   public:
-    virtual Screen* create(int w, int h) { return new ScreenX11; };
+    virtual Screen* create(unsigned short width, unsigned short height)
+    { return new ScreenX11(width, height); }
   };
 
 }

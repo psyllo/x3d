@@ -1,5 +1,5 @@
-#ifndef __RASTERIZER_HPP
-#define __RASTERIZER_HPP
+#ifndef __X3D_RASTERIZER_HPP
+#define __X3D_RASTERIZER_HPP
 
 /*
   A rasterizer talks only to the ScreenInfo, to find out what it

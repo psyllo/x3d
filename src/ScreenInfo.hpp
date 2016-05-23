@@ -1,5 +1,5 @@
-#ifndef __SCREENINFO_HPP
-#define __SCREENINFO_HPP
+#ifndef __X3D_SCREENINFO_HPP
+#define __X3D_SCREENINFO_HPP
 
 // See: pg. 111 Linux 3D Graphics Programming
 // See: https://xcb.freedesktop.org/colorsandpixmaps/

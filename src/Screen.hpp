@@ -18,13 +18,13 @@ namespace x3d {
     virtual void refreshPalette() { };
     virtual ScreenInfo* getInfo() = 0;
     virtual Polygon2D* getViewWin() = 0;
-    virtual uint16_t getWidth() = 0;
-    virtual uint16_t getHeight() = 0;
+    virtual unsigned short getWidth() = 0;
+    virtual unsigned short getHeight() = 0;
   };
 
   class ScreenFactory {
   public:
-    virtual Screen* create(int w, int h) = 0;
+    virtual Screen* create(unsigned short width, unsigned short height) = 0;
   };
 }
 

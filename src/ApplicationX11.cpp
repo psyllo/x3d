@@ -49,10 +49,6 @@ namespace x3d {
 
     // Update to the changes we made above
     if(updateWindow) screen->updateWindowAttributes();
-
-    // More
-    screen->setWidth(default_screen_w);
-    screen->setHeight(default_screen_h);
   }
 
   void ApplicationX11::createWindow() {
