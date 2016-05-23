@@ -21,5 +21,10 @@ namespace x3d {
     virtual void start() = 0;
   };
 
+  class DispatcherFactory {
+  public:
+    virtual Dispatcher* create() = 0;
+  };
+
 }
 #endif

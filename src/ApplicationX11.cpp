@@ -4,11 +4,12 @@
 #include "ApplicationX11.hpp"
 
 #include "DispatcherX11.hpp"
-#include "ScreenX11.hpp"
+#include "FactoryManager.hpp"
 #include "PipelineDemo.hpp" // TODO: hard-coded for demo
+#include "ScreenX11.hpp"
 #include <boost/log/trivial.hpp>
-#include <memory>
 #include <cassert>
+#include <memory>
 
 namespace x3d {
 
@@ -74,7 +75,10 @@ namespace x3d {
 
   void ApplicationX11::eventLoop() {
     // TODO: hard-coded pipeline instantiation for demo
-    DispatcherX11 dispatcher(new PipelineDemo, screen);
+    FactoryManager fm;
+    ScreenInfo* screen_info = screen->getInfo(); // TODO: LEFT_OFF
+    Rasterizer* ras = new Rasterizer(screen_info);
+    DispatcherX11 dispatcher(new PipelineDemo(ras), screen);
     dispatcher.start();
   }
 

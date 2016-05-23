@@ -2,10 +2,16 @@
 #include "../config.h"
 
 #include "ScreenX11.hpp"
-#include <iostream>
+
 #include <boost/log/trivial.hpp>
+#include <cstdint>
+#include <iostream>
 
 namespace x3d {
+
+  void ScreenX11::blit() {
+    // TODO: write this function
+  }
 
   bool ScreenX11::init() {
     if(_initialized) return false;

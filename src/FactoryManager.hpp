@@ -13,6 +13,7 @@ using std::shared_ptr;
 // Assume X11 if *nix
 #include "ApplicationX11.hpp"
 #include "DispatcherX11.hpp"
+#include "ScreenX11.hpp"
 #elif __APPLE__
 // TODO: Apple not supported yet
 #elif _WIN32

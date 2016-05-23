@@ -1,10 +1,8 @@
 bin_PROGRAMS = demo
 demo_SOURCES = main.cpp \
-ApplicationFactory.hpp \
 Application.hpp \
 ApplicationX11.cpp \
 ApplicationX11.hpp \
-DispatcherFactory.hpp \
 Dispatcher.hpp \
 DispatcherX11.cpp \
 DispatcherX11.hpp \
@@ -14,10 +12,12 @@ FactoryManager.hpp \
 PipelineDemo.cpp \
 PipelineDemo.hpp \
 Pipeline.hpp \
+Polygon2D.hpp \
+Polygon2D.cpp \
 Rasterizer.hpp \
 Rasterizer.cpp \
-ScreenFactory.hpp \
 Screen.hpp \
+ScreenInfo.hpp \
 ScreenX11.cpp \
 ScreenX11.hpp
 

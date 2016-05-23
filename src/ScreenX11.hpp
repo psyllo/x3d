@@ -1,7 +1,7 @@
 #ifndef __X3D_SCREENX11_HPP
 #define __X3D_SCREENX11_HPP
 
-#include "ScreenFactory.hpp"
+#include "Screen.hpp"
 
 #include <memory>
 #include <xcb/xcb.h>
@@ -21,19 +21,23 @@ namespace x3d {
     int16_t screen_x, screen_y;
     uint16_t screen_w, screen_h;
     uint16_t border_width;
+    ScreenInfo* info;
+    Polygon2D* view_win;
 
   public:
     ScreenX11()
       : _initialized(false), connection(NULL), screen(NULL), value_mask(0),
-        screen_x(0), screen_y(0), screen_w(0), screen_h(0), border_width(0)
+        screen_x(0), screen_y(0), screen_w(0), screen_h(0), border_width(0),
+        info(NULL)
     { }
     virtual ~ScreenX11() { /* TODO */ }
     virtual bool init();
     virtual bool open();
     virtual bool close();
-    xcb_connection_t* getConnection() { return connection; }
-    xcb_window_t* getWindow() { return &window; }
-    xcb_screen_t* getXCBscreen() { return screen; };
+    virtual void blit();
+    xcb_connection_t* getXCBConnection() { return connection; } // TODO: breaks good abstraction
+    xcb_window_t* getXCBWindow() { return &window; } // TODO: breaks good abstraction
+    xcb_screen_t* getXCBscreen() { return screen; }; // TODO: breaks good abstraction
     int16_t getX() { return screen_x; }
     void setX(int16_t X) { screen_x = X; }
     int16_t getY() { return screen_y; }
@@ -44,6 +48,8 @@ namespace x3d {
     void setHeight(uint16_t H) { screen_h = H; }
     uint16_t getBorderWidth() { return border_width; }
     void setBorderWidth(uint16_t W) { border_width = W; }
+    ScreenInfo* getInfo() { return info; }
+    Polygon2D* getViewWin() { return view_win; }
 
     // uint32_t getValueMask() { return mask; }
     // void setValueMask(uint32_t valuemask) { mask = valuemask; }
@@ -72,7 +78,7 @@ namespace x3d {
        XCB_CW_CURSOR            = 1L<<14
      */
     static const uint32_t VALUE_LIST_SIZE = 20;
-    uint32_t value_list[VALUE_LIST_SIZE] = {0}; // TODO: all zeroed per C++ spec AFAIK
+    uint32_t value_list[VALUE_LIST_SIZE] = {0}; // TODO: verify all zeroed (per C++ spec AFAIK)
     // TODO: consider using uint32_t[hard_coded_number]
     // Order of values in value list much follow order in xcb_cw_t enum.
     //
@@ -120,7 +126,7 @@ namespace x3d {
    */
   class ScreenFactoryX11 : public ScreenFactory {
   public:
-    Screen* create() { return new ScreenX11; }
+    virtual Screen* create(int w, int h) { return new ScreenX11; };
   };
 
 }

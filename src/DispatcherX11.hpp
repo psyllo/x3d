@@ -5,7 +5,7 @@
   Forms the connnection between Pipleline and incoming X events
  */
 
-#include "DispatcherFactory.hpp"
+#include "Dispatcher.hpp"
 #include "ScreenX11.hpp"
 #include "Pipeline.hpp"
 

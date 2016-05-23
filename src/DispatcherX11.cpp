@@ -35,8 +35,8 @@ namespace x3d {
   }
 
   void DispatcherX11::start() {
-    xcb_connection_t* connection = _screen->getConnection();
-    xcb_window_t* window = _screen->getWindow();
+    xcb_connection_t* connection = _screen->getXCBConnection();
+    xcb_window_t* window = _screen->getXCBWindow();
     xcb_generic_event_t* event;
     // xcb_wait_for_event (note xcb_poll_for_event available for
     // non-blocking) blocks until an event is queued in the X server,
@@ -126,6 +126,7 @@ namespace x3d {
         break;
       }
 
+      // TODO: LEFT_OFF
       pipeline->updateEvent();
       pipeline->drawEvent();
 

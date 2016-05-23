@@ -1,7 +1,7 @@
 #ifndef __X3D_APPLICATIONX11_HPP
 #define __X3D_APPLICATIONX11_HPP
 
-#include "ApplicationFactory.hpp"
+#include "Application.hpp"
 #include "ScreenX11.hpp"
 
 namespace x3d {
