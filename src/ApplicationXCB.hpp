@@ -10,9 +10,9 @@ namespace x3d {
   class ApplicationXCB : public Application {
   protected:
     ScreenXCB* screen;
-    void setupScreenValues(bool updateWindow);
-    void createWindow();
-    void eventLoop();
+    virtual void setupScreenValues(bool updateWindow);
+    virtual void createWindow();
+    virtual void eventLoop();
 
   public:
     ApplicationXCB() : screen(NULL) {}

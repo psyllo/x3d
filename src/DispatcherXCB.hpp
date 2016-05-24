@@ -14,11 +14,9 @@ namespace x3d {
   class DispatcherXCB : public Dispatcher {
     ScreenXCB* _screen;
   public:
-    DispatcherXCB() {
-    }
-    DispatcherXCB(Pipeline* pipeline, ScreenXCB* event_source)
-      : Dispatcher(pipeline, event_source), _screen(event_source) // TODO verify this constructor works
-    {  }
+    DispatcherXCB() : Dispatcher() {}
+    DispatcherXCB(Pipeline* pipeline, EventSource* screen_xcb)
+      : _screen((ScreenXCB*)screen_xcb) {} // TODO: Verify pipeline and event_source get initialized
     void start();
   };
 
@@ -27,7 +25,8 @@ namespace x3d {
   */
   class DispatcherFactoryXCB : public DispatcherFactory {
   public:
-    Dispatcher* create() { return new DispatcherXCB; }
+    Dispatcher* create(Pipeline* pipeline, EventSource* screen_xcb)
+    { return new DispatcherXCB(pipeline, screen_xcb); }
   };
 
 }

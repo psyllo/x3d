@@ -3,7 +3,7 @@
 #include <xcb/xcb.h>
 #include <cstdlib>
 #include <iostream>
-
+#include <cassert>
 #include <cstdlib>
 #include <cstdio>
 #include <inttypes.h>
@@ -34,6 +34,9 @@ namespace x3d {
   }
 
   void DispatcherXCB::start() {
+    assert(pipeline);
+    assert(_screen);
+
     xcb_connection_t* connection = _screen->getXCBConnection();
     xcb_window_t* window = _screen->getXCBWindow();
     xcb_generic_event_t* event;

@@ -11,11 +11,9 @@ namespace x3d {
     Pipeline* pipeline;
     EventSource* event_source;
   public:
-    Dispatcher() {
-    }
-    Dispatcher(Pipeline* pipeline, EventSource* event_source)
-      : pipeline(pipeline), event_source(event_source) {
-    }
+    Dispatcher() : pipeline(nullptr), event_source(nullptr) {}
+    Dispatcher(Pipeline* p, EventSource* evsrc) : pipeline(p), event_source(evsrc) {}
+    virtual ~Dispatcher() {}
     EventSource* getEventSource() {return event_source;}
     Pipeline* getPipeline() {return pipeline;}
     virtual void start() = 0;
@@ -23,7 +21,7 @@ namespace x3d {
 
   class DispatcherFactory {
   public:
-    virtual Dispatcher* create() = 0;
+    virtual Dispatcher* create(Pipeline* pipeline, EventSource* evsrc) = 0;
   };
 
 }

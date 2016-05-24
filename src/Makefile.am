@@ -9,8 +9,8 @@ DispatcherXCB.hpp \
 EventSource.hpp \
 FactoryManager.cpp \
 FactoryManager.hpp \
-PipelineDemo.cpp \
-PipelineDemo.hpp \
+PipelineXCBdemo.cpp \
+PipelineXCBdemo.hpp \
 Pipeline.hpp \
 Polygon2D.hpp \
 Polygon2D.cpp \

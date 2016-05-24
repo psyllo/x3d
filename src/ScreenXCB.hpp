@@ -35,9 +35,9 @@ namespace x3d {
     ScreenXCB(unsigned short screen_width, unsigned short screen_height)
       : _initialized(false),
         border_width(0),
-        connection(NULL),
-        info(NULL),
-        screen(NULL),
+        connection(nullptr),
+        info(nullptr),
+        screen(nullptr),
         screen_h(screen_height),
         screen_w(screen_width),
         screen_x(0),

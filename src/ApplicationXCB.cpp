@@ -5,11 +5,12 @@
 
 #include "DispatcherXCB.hpp"
 #include "FactoryManager.hpp"
-#include "PipelineDemo.hpp" // TODO: hard-coded for demo
 #include "ScreenXCB.hpp"
 #include <boost/log/trivial.hpp>
 #include <cassert>
 #include <memory>
+
+#include "PipelineXCBdemo.hpp"
 
 namespace x3d {
 
@@ -37,6 +38,8 @@ namespace x3d {
 
    */
   void ApplicationXCB::setupScreenValues(bool updateWindow) {
+    assert(screen);
+
     screen->value_mask = 0; // reset
 
     // Background
@@ -70,12 +73,14 @@ namespace x3d {
   }
 
   void ApplicationXCB::eventLoop() {
-    // TODO: hard-coded pipeline instantiation for demo
-    FactoryManager fm;
-    ScreenInfo* screen_info = screen->getInfo(); // TODO: LEFT_OFF
+    // TODO: LEFT_OFF
+    assert(screen);
+    ScreenInfo* screen_info = screen->getInfo();
     Rasterizer* ras = new Rasterizer(screen_info);
-    DispatcherXCB dispatcher(new PipelineDemo(ras), screen);
-    dispatcher.start();
+    PipelineXCBdemo* pipeline = new PipelineXCBdemo(ras);
+    FactoryManager fm;
+    Dispatcher* dispatcher = fm.getDispatcherFactory()->create(pipeline, screen);
+    dispatcher->start();
   }
 
   void ApplicationXCB::execute() {
