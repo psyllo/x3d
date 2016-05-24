@@ -1,7 +1,6 @@
-#include "DispatcherX11.hpp"
+#include "DispatcherXCB.hpp"
 
 #include <xcb/xcb.h>
-#include <X11/Xlib.h>
 #include <cstdlib>
 #include <iostream>
 
@@ -34,7 +33,7 @@ namespace x3d {
     printf ("\n");
   }
 
-  void DispatcherX11::start() {
+  void DispatcherXCB::start() {
     xcb_connection_t* connection = _screen->getXCBConnection();
     xcb_window_t* window = _screen->getXCBWindow();
     xcb_generic_event_t* event;

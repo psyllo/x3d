@@ -1,12 +1,12 @@
 #define BOOST_LOG_DYN_LINK 1 // TODO
 #include "../config.h"
 
-#include "ApplicationX11.hpp"
+#include "ApplicationXCB.hpp"
 
-#include "DispatcherX11.hpp"
+#include "DispatcherXCB.hpp"
 #include "FactoryManager.hpp"
 #include "PipelineDemo.hpp" // TODO: hard-coded for demo
-#include "ScreenX11.hpp"
+#include "ScreenXCB.hpp"
 #include <boost/log/trivial.hpp>
 #include <cassert>
 #include <memory>
@@ -14,7 +14,7 @@
 namespace x3d {
 
   /*
-    Set default ScreenX11 values. Order of values in values_list must
+    Set default ScreenXCB values. Order of values in values_list must
     follow order found in the enum xcb_cw_t.
 
     Enum xcb_cw_t copied here for convenience (see: xcb/xproto.h):
@@ -36,7 +36,7 @@ namespace x3d {
     XCB_CW_CURSOR            = 1L<<14
 
    */
-  void ApplicationX11::setupScreenValues(bool updateWindow) {
+  void ApplicationXCB::setupScreenValues(bool updateWindow) {
     screen->value_mask = 0; // reset
 
     // Background
@@ -51,13 +51,13 @@ namespace x3d {
     if(updateWindow) screen->updateWindowAttributes();
   }
 
-  void ApplicationX11::createWindow() {
+  void ApplicationXCB::createWindow() {
     if(screen) {
       BOOST_LOG_TRIVIAL(warning) << "Screen already created. Freeing previous";
       free(screen);
     }
 
-    screen = new ScreenX11; // TODO: unique_ptr?
+    screen = new ScreenXCB; // TODO: unique_ptr?
 
     if(!screen->init()) {
       BOOST_LOG_TRIVIAL(fatal) << "Screen init failed";
@@ -69,16 +69,16 @@ namespace x3d {
     assert(screen->open()); // TODO: Throw exception
   }
 
-  void ApplicationX11::eventLoop() {
+  void ApplicationXCB::eventLoop() {
     // TODO: hard-coded pipeline instantiation for demo
     FactoryManager fm;
     ScreenInfo* screen_info = screen->getInfo(); // TODO: LEFT_OFF
     Rasterizer* ras = new Rasterizer(screen_info);
-    DispatcherX11 dispatcher(new PipelineDemo(ras), screen);
+    DispatcherXCB dispatcher(new PipelineDemo(ras), screen);
     dispatcher.start();
   }
 
-  void ApplicationX11::execute() {
+  void ApplicationXCB::execute() {
     createWindow();
     eventLoop();
   }

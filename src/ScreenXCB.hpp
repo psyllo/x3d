@@ -1,5 +1,5 @@
-#ifndef __X3D_SCREENX11_HPP
-#define __X3D_SCREENX11_HPP
+#ifndef __X3D_SCREENXCB_HPP
+#define __X3D_SCREENXCB_HPP
 
 /*
   XCB uses <cstdint> types such as uint16_t, but our X3D uses standard
@@ -14,7 +14,7 @@
 
 namespace x3d {
 
-  class ScreenX11 : public Screen {
+  class ScreenXCB : public Screen {
 
   private:
     bool _initialized;
@@ -31,8 +31,8 @@ namespace x3d {
     Polygon2D* view_win;
 
   public:
-    ScreenX11() : ScreenX11(default_screen_w, default_screen_h) { }
-    ScreenX11(unsigned short screen_width, unsigned short screen_height)
+    ScreenXCB() : ScreenXCB(default_screen_w, default_screen_h) { }
+    ScreenXCB(unsigned short screen_width, unsigned short screen_height)
       : _initialized(false),
         border_width(0),
         connection(NULL),
@@ -44,7 +44,7 @@ namespace x3d {
         screen_y(0),
         value_mask(0)
     { }
-    virtual ~ScreenX11() { /* TODO */ }
+    virtual ~ScreenXCB() { /* TODO */ }
     virtual bool init();
     virtual bool open();
     virtual bool close();
@@ -140,10 +140,10 @@ namespace x3d {
   /*
     Factory
    */
-  class ScreenFactoryX11 : public ScreenFactory {
+  class ScreenFactoryXCB : public ScreenFactory {
   public:
     virtual Screen* create(unsigned short width, unsigned short height)
-    { return new ScreenX11(width, height); }
+    { return new ScreenXCB(width, height); }
   };
 
 }

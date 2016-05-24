@@ -10,10 +10,10 @@
 using std::shared_ptr;
 
 #ifdef __unix__
-// Assume X11 if *nix
-#include "ApplicationX11.hpp"
-#include "DispatcherX11.hpp"
-#include "ScreenX11.hpp"
+// Assume XCB if *nix
+#include "ApplicationXCB.hpp"
+#include "DispatcherXCB.hpp"
+#include "ScreenXCB.hpp"
 #elif __APPLE__
 // TODO: Apple not supported yet
 #elif _WIN32
@@ -32,9 +32,9 @@ namespace x3d {
 
 #ifdef __unix__
     FactoryManager()
-      : applicationFactory(new ApplicationFactoryX11),
-        dispatcherFactory(new DispatcherFactoryX11),
-        screenFactory(new ScreenFactoryX11)
+      : applicationFactory(new ApplicationFactoryXCB),
+        dispatcherFactory(new DispatcherFactoryXCB),
+        screenFactory(new ScreenFactoryXCB)
     { }
 #endif
 

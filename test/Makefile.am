@@ -1,6 +1,6 @@
 bin_PROGRAMS = testall
-testtargetsources = ../src/ScreenX11.hpp ../src/ScreenX11.cpp
-testall_SOURCES = $(testtargetsources) Main_test.cpp ScreenX11_test.cpp
+testtargetsources = ../src/ScreenXCB.hpp ../src/ScreenXCB.cpp
+testall_SOURCES = $(testtargetsources) Main_test.cpp ScreenXCB_test.cpp
 
 testall_CPPFLAGS = $(PTHREAD_CFLAGS) $(CPPFLAGS) -I../src/
 testall_CFLAGS =  $(PTHREAD_CFLAGS) $(X11_CFLAGS) $(XCB_CFLAGS) $(CFLAGS)

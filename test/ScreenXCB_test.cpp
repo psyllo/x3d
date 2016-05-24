@@ -3,12 +3,12 @@
 #include <boost/log/trivial.hpp>
 #include <catch.hpp>
 
-#include <ScreenX11.hpp>
+#include <ScreenXCB.hpp>
 
 using namespace x3d;
 
-TEST_CASE("ScreenX11 init-open-close", "[x11]") {
-  ScreenX11 screen;
+TEST_CASE("ScreenXCB init-open-close", "[xcb]") {
+  ScreenXCB screen;
   // TODO: screen.setValueMask();
   // TODO: screen.setValueList();
   bool init_ok = screen.init();

@@ -1,7 +1,7 @@
 #define BOOST_LOG_DYN_LINK 1 // TODO
 #include "../config.h"
 
-#include "ScreenX11.hpp"
+#include "ScreenXCB.hpp"
 
 #include <boost/log/trivial.hpp>
 #include <cstdint>
@@ -9,11 +9,11 @@
 
 namespace x3d {
 
-  void ScreenX11::blit() {
+  void ScreenXCB::blit() {
     // TODO: write this function
   }
 
-  bool ScreenX11::init() {
+  bool ScreenXCB::init() {
     if(_initialized) return false;
 
     /* Open the connection to the X server */
@@ -36,7 +36,7 @@ namespace x3d {
   /*
     See: https://xcb.freedesktop.org/tutorial/basicwindowsanddrawing/
    */
-  bool ScreenX11::open() {
+  bool ScreenXCB::open() {
     if(!_initialized) {
       BOOST_LOG_TRIVIAL(error) << "uninitialized";
       return false;
@@ -61,7 +61,7 @@ namespace x3d {
   }
 
 
-  bool ScreenX11::close() {
+  bool ScreenXCB::close() {
     if(!_initialized) {
       BOOST_LOG_TRIVIAL(error) << "uninitialized";
       return false;

@@ -1,22 +1,22 @@
-#ifndef __X3D_APPLICATIONX11_HPP
-#define __X3D_APPLICATIONX11_HPP
+#ifndef __X3D_APPLICATIONXCB_HPP
+#define __X3D_APPLICATIONXCB_HPP
 
 #include "Application.hpp"
-#include "ScreenX11.hpp"
+#include "ScreenXCB.hpp"
 #include <cstdint>
 
 namespace x3d {
 
-  class ApplicationX11 : public Application {
+  class ApplicationXCB : public Application {
   protected:
-    ScreenX11* screen;
+    ScreenXCB* screen;
     void setupScreenValues(bool updateWindow);
     void createWindow();
     void eventLoop();
 
   public:
-    ApplicationX11() : screen(NULL) {}
-    virtual ~ApplicationX11() { /* TODO */ }
+    ApplicationXCB() : screen(NULL) {}
+    virtual ~ApplicationXCB() { /* TODO */ }
     virtual void execute();
     const static uint16_t default_event_mask =
       XCB_EVENT_MASK_EXPOSURE       | XCB_EVENT_MASK_BUTTON_PRESS   |
@@ -28,9 +28,9 @@ namespace x3d {
   /*
     Factory
    */
-  class ApplicationFactoryX11 : public ApplicationFactory {
+  class ApplicationFactoryXCB : public ApplicationFactory {
   public:
-    virtual Application* create() { return new ApplicationX11; }
+    virtual Application* create() { return new ApplicationXCB; }
   };
 }
 

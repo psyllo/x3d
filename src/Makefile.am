@@ -1,11 +1,11 @@
 bin_PROGRAMS = demo
 demo_SOURCES = main.cpp \
 Application.hpp \
-ApplicationX11.cpp \
-ApplicationX11.hpp \
+ApplicationXCB.cpp \
+ApplicationXCB.hpp \
 Dispatcher.hpp \
-DispatcherX11.cpp \
-DispatcherX11.hpp \
+DispatcherXCB.cpp \
+DispatcherXCB.hpp \
 EventSource.hpp \
 FactoryManager.cpp \
 FactoryManager.hpp \
@@ -18,8 +18,8 @@ Rasterizer.hpp \
 Rasterizer.cpp \
 Screen.hpp \
 ScreenInfo.hpp \
-ScreenX11.cpp \
-ScreenX11.hpp
+ScreenXCB.cpp \
+ScreenXCB.hpp
 
 demo_CPPFLAGS = $(PTHREAD_CFLAGS) $(CPPFLAGS)
 demo_CFLAGS = $(PTHREAD_CFLAGS) $(X11_CFLAGS) $(XCB_CFLAGS) $(CFLAGS)

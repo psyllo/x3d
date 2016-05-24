@@ -24,13 +24,11 @@ LT_INIT
 
 # Checks for header files.
 AC_CHECK_HEADERS([stdlib.h])
-AC_CHECK_HEADERS([X11/Xlib.h])
 AC_CHECK_HEADERS([xcb/xcb.h])
 
 
 # Checks for libraries.
 PKG_PROG_PKG_CONFIG
-PKG_CHECK_MODULES([X11], [x11 >= 1.6.3])
 PKG_CHECK_MODULES([XCB], [xcb >= 1.11])
 
 AX_PTHREAD
