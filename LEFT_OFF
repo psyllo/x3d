@@ -1,0 +1,2 @@
+Writing: void ScreenXCB::blit()
+http://stackoverflow.com/questions/27745131/how-to-use-shm-pixmap-with-xcb

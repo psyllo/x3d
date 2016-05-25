@@ -23,7 +23,7 @@ namespace x3d {
 
   protected:
     unsigned char* addressOfPoint(int x, int y);
-    void drawPointAtAddress(unsigned char** p, unsigned long c);
+    void drawPointAtAddress(unsigned char** p, unsigned long color);
   };
 }
 #endif

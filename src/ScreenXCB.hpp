@@ -34,7 +34,7 @@ namespace x3d {
     unsigned char *buffer; // offscreen buffer
     unsigned char bytespp;
 
-    void createBuffer();
+    void createOffscreenBuffer();
 
   public:
     ScreenXCB() : ScreenXCB(default_screen_w, default_screen_h)
@@ -44,6 +44,7 @@ namespace x3d {
         border_width(0),
         bytespp(0),
         connection(nullptr),
+        graphics_context(0),
         sinfo(nullptr),
         screen(nullptr),
         screen_h(screen_height),
@@ -148,6 +149,9 @@ namespace x3d {
       // TODO: write unit test
       xcb_change_window_attributes(connection, window, value_mask, value_list);
     }
+
+    xcb_gcontext_t graphics_context;
+    xcb_pixmap_t pixmap_id;
 
   };
 

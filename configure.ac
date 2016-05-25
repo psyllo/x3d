@@ -30,6 +30,7 @@ AC_CHECK_HEADERS([xcb/xcb.h])
 # Checks for libraries.
 PKG_PROG_PKG_CONFIG
 PKG_CHECK_MODULES([XCB], [xcb >= 1.11])
+PKG_CHECK_MODULES([XCB_SHM], [xcb-shm >= 1.11])
 
 AX_PTHREAD
 

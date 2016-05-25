@@ -31,6 +31,9 @@ namespace x3d {
   constexpr int MAX_LIGHT_LEVELS = 255;
   constexpr int NUM_LIGHT_LEVELS = MAX_LIGHT_LEVELS + 1;
 
+  constexpr unsigned char BITS_PER_BYTE = 4; // From: l3d_0.4/source/app/lib/system/sys_dep.h
+  constexpr unsigned char MAX_BYTE = 4; // From: l3d_0.4/source/app/lib/system/sys_dep.h
+
   // max light levels should also be correct for mesa rasterizer, which
   // uses the light levels not as a lookup but as a direct lightmap intensity,
   // RGB of one byte.

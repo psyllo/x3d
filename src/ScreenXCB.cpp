@@ -14,8 +14,6 @@
 
 namespace x3d {
 
-  constexpr unsigned char BITS_PER_BYTE = 4;
-
   /*
     visual_type contains the visual structure, or a NULL visual
     structure if no screen is found code from. xcb_visualtype_t, which
@@ -60,7 +58,7 @@ namespace x3d {
     return NULL;
   }
 
-  void ScreenXCB::createBuffer() {
+  void ScreenXCB::createOffscreenBuffer() {
     assert(sinfo);
     assert(screen_w > 0);
     assert(screen_h > 0);
@@ -71,7 +69,49 @@ namespace x3d {
   }
 
   void ScreenXCB::blit() {
-    // TODO: write this function
+
+    // TODO: LEFT_OFF: Use xcb-shm and shm.h to create a shared pixmap
+    // on the X server. We write to it, and then copy it to the
+    // window. We have the p_screenbuf, but maybe we do not need
+    // it.
+    // See: l3d_0.4/source/app/lib/tool_2d/sc_x11sh.h
+    // See: A GOOD EXAMPLE: http://stackoverflow.com/questions/27745131/how-to-use-shm-pixmap-with-xcb
+    // See: https://xcb.freedesktop.org/manual/shm_8h_source.html
+    // See: https://xcb.freedesktop.org/manual/group__XCB__Shm__API.html#ga2c3c96121d4bb3f47ce6c4027756d181
+
+    // From: xcb/xproto.h
+    // xcb_void_cookie_t
+    //   xcb_put_image (xcb_connection_t *c,
+    //                  uint8_t           format,
+    //                  xcb_drawable_t    drawable,
+    //                  xcb_gcontext_t    gc,
+    //                  uint16_t          width,
+    //                  uint16_t          height,
+    //                  int16_t           dst_x,
+    //                  int16_t           dst_y,
+    //                  uint8_t           left_pad,
+    //                  uint8_t           depth,
+    //                  uint32_t          data_len,
+    //                  const uint8_t    *data);
+
+    // From: xcb/xproto.h
+    // typedef enum xcb_image_format_t {
+    //   XCB_IMAGE_FORMAT_XY_BITMAP = 0,
+    //   XCB_IMAGE_FORMAT_XY_PIXMAP = 1,
+    //   XCB_IMAGE_FORMAT_Z_PIXMAP = 2
+    // } xcb_image_format_t;
+
+
+    xcb_copy_area(connection,
+                  pixmap_id,      /* drawable we want to paste */
+                  window,         /* drawable on which we copy the previous Drawable */
+                  graphics_context,
+                  0,              /* top left x coordinate of the region we want to copy */
+                  0,              /* top left y coordinate of the region we want to copy */
+                  0,              /* top left x coordinate of the region where we want to copy */
+                  0,              /* top left y coordinate of the region where we want to copy */
+                  screen_w,       /* TODO: hard-coded - pixel width of the region we want to copy */
+                  screen_h);      /* TODO: hard-coded - pixel height of the region we want to copy */
   }
 
   /*
@@ -137,9 +177,7 @@ namespace x3d {
       return false;
     }
 
-    createBuffer();
-
-    // TODO: Get GC?
+    createOffscreenBuffer();
 
     _initialized = true;
     return _initialized;
@@ -171,9 +209,15 @@ namespace x3d {
     /* Map the window on the screen and flush */
     xcb_map_window(connection, window);
     xcb_flush(connection);
+
+    // Get Graphics Context
+    // TODO: value_mask, value_list - see link below.
+    // See: https://xcb.freedesktop.org/manual/group__XCB____API.html#ga1b7addfaefc2d194314321ee1970d89d
+    graphics_context = xcb_generate_id (connection);
+    xcb_create_gc(connection, graphics_context, window, NULL, NULL); // TODO: populate NULL, NULL see above
+
     return true;
   }
-
 
   bool ScreenXCB::close() {
     if(!_initialized) {
