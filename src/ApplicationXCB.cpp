@@ -62,7 +62,7 @@ namespace x3d {
 
     screen = new ScreenXCB; // TODO: unique_ptr?
 
-    if(!screen->init()) {
+    if(!screen->isInitialized()) {
       BOOST_LOG_TRIVIAL(fatal) << "Screen init failed";
       exit(EXIT_FAILURE); // TODO: throw exception
     }
@@ -75,8 +75,8 @@ namespace x3d {
   void ApplicationXCB::eventLoop() {
     // TODO: LEFT_OFF
     assert(screen);
-    ScreenInfo* screen_info = screen->getInfo();
-    Rasterizer* ras = new Rasterizer(screen_info);
+    ScreenInfo* screen_info = screen->getInfo(); // TODO: LEFT_OFF: making getInfo() work
+    Rasterizer* ras = new Rasterizer(screen_info, screen->getWidth(), screen->getHeight());
     PipelineXCBdemo* pipeline = new PipelineXCBdemo(ras);
     FactoryManager fm;
     Dispatcher* dispatcher = fm.getDispatcherFactory()->create(pipeline, screen);

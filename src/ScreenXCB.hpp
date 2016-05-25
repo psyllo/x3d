@@ -10,6 +10,7 @@
 #include "Screen.hpp"
 
 #include <memory>
+#include <cassert>
 #include <xcb/xcb.h>
 
 namespace x3d {
@@ -18,6 +19,7 @@ namespace x3d {
 
   private:
     bool _initialized;
+    bool initialize();
 
   protected:
     // TODO: use unique_ptr/shared_ptr?
@@ -27,44 +29,56 @@ namespace x3d {
     short screen_x, screen_y;
     unsigned short screen_w, screen_h;
     unsigned short border_width;
-    ScreenInfo* info;
+    ScreenInfo* sinfo;
     Polygon2D* view_win;
+    unsigned char *buffer; // offscreen buffer
+    unsigned char bytespp;
+
+    void createBuffer();
 
   public:
-    ScreenXCB() : ScreenXCB(default_screen_w, default_screen_h) { }
+    ScreenXCB() : ScreenXCB(default_screen_w, default_screen_h)
+    { }
     ScreenXCB(unsigned short screen_width, unsigned short screen_height)
       : _initialized(false),
         border_width(0),
+        bytespp(0),
         connection(nullptr),
-        info(nullptr),
+        sinfo(nullptr),
         screen(nullptr),
         screen_h(screen_height),
         screen_w(screen_width),
         screen_x(0),
         screen_y(0),
         value_mask(0)
-    { }
+    { initialize(); }
     virtual ~ScreenXCB() { /* TODO */ }
-    virtual bool init();
     virtual bool open();
     virtual bool close();
     virtual void blit();
+    bool isInitialized() {return _initialized;}
     xcb_connection_t* getXCBConnection() { return connection; } // TODO: breaks good abstraction
     xcb_window_t* getXCBWindow() { return &window; } // TODO: breaks good abstraction
     xcb_screen_t* getXCBscreen() { return screen; }; // TODO: breaks good abstraction
-    short getX() { return screen_x; }
-    void setX(short X) { screen_x = X; }
-    short getY() { return screen_y; }
-    void setY(short Y) { screen_y = Y; }
-    unsigned short getWidth() { return screen_w; }
-    void setWidth(unsigned short W) { screen_w = W; }
-    unsigned short getHeight() { return screen_h; }
-    void setHeight(unsigned short H) { screen_h = H; }
+    short getX() { return screen_x; } // TODO: access xcb_screen_t structure
+    short getY() { return screen_y; } // TODO: access xcb_screen_t structure
+    unsigned short getWidth() { return screen->width_in_pixels; }
+    unsigned short getHeight() { return screen->height_in_pixels; }
     unsigned short getBorderWidth() { return border_width; }
-    void setBorderWidth(unsigned short W) { border_width = W; }
-    ScreenInfo* getInfo() { return info; }
+    ScreenInfo* getInfo() { return sinfo; }
     Polygon2D* getViewWin() { return view_win; }
-
+    unsigned char getDepth() {assert(screen); screen->root_depth;}
+    xcb_visualid_t getVisualID() {assert(screen); screen->root_visual;}
+    const xcb_visualtype_t* getVisualType();
+    unsigned char getScanlinePad()
+    {assert(connection); return xcb_get_setup(connection)->bitmap_format_scanline_pad;}
+    unsigned char getBitmapScanlineUnit()
+    {assert(connection); return xcb_get_setup(connection)->bitmap_format_scanline_unit;}
+    unsigned char getBitmapBitOrder()
+    {assert(connection); return xcb_get_setup(connection)->bitmap_format_bit_order;}
+    unsigned char getImageByteOrder()
+    {assert(connection); return xcb_get_setup(connection)->image_byte_order;}
+    xcb_screen_t* screenOfDisplay(int screen_number);
     // unsigned int getValueMask() { return mask; }
     // void setValueMask(unsigned int valuemask) { mask = valuemask; }
     // unsigned int* getValueList() { return value_list; }

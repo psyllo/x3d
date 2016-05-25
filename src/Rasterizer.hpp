@@ -13,9 +13,10 @@ namespace x3d {
   class Rasterizer {
 
   public:
-    ScreenInfo* scninfo;
-
-    Rasterizer(ScreenInfo *screen_info) : scninfo(screen_info) { }
+    ScreenInfo* sinfo;
+    unsigned short width, height;
+    Rasterizer(ScreenInfo *screen_info, unsigned short screen_width, unsigned short screen_height) 
+      : sinfo(screen_info), width(screen_width), height(screen_height) { }
     virtual ~Rasterizer() { }
     void drawPoint(int x, int y, unsigned long color);
     void drawLine(int x0, int y0, int x1, int y1, unsigned long color);

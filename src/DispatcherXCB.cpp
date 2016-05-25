@@ -4,9 +4,9 @@
 #include <cstdlib>
 #include <iostream>
 #include <cassert>
-#include <cstdlib>
+#include <cinttypes>
 #include <cstdio>
-#include <inttypes.h>
+#include <cstdlib>
 
 namespace x3d {
 
@@ -50,6 +50,7 @@ namespace x3d {
       switch(event->response_type & ~0x80) {
 
       case XCB_EXPOSE: {
+
         xcb_expose_event_t *expose = (xcb_expose_event_t *)event;
 
         printf ("Window %"PRIu32" exposed. Region to be redrawn at location (%"PRIu16",%"PRIu16"), with dimension (%"PRIu16",%"PRIu16")\n",

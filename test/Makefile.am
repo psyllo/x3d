@@ -1,5 +1,5 @@
 bin_PROGRAMS = testall
-testtargetsources = ../src/ScreenXCB.hpp ../src/ScreenXCB.cpp
+testtargetsources = ../src/ScreenXCB.hpp ../src/ScreenXCB.cpp ../src/ScreenInfoRgb.hpp ../src/ScreenInfoRgb.cpp
 testall_SOURCES = $(testtargetsources) Main_test.cpp ScreenXCB_test.cpp
 
 testall_CPPFLAGS = $(PTHREAD_CFLAGS) $(CPPFLAGS) -I../src/

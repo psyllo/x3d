@@ -18,6 +18,8 @@ Rasterizer.hpp \
 Rasterizer.cpp \
 Screen.hpp \
 ScreenInfo.hpp \
+ScreenInfoRgb.hpp \
+ScreenInfoRgb.cpp \
 ScreenXCB.cpp \
 ScreenXCB.hpp
 

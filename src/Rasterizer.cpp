@@ -5,6 +5,7 @@ namespace x3d {
   unsigned char* Rasterizer::addressOfPoint(int x, int y) {
     // TODO: LEFT_OFF: write function
     // TODO: screen_info->screen_buffer (see page 134 in Linux Graphics book)
+    return sinfo->p_screenbuf + sinfo->bytes_per_pixel * (width*y + x);
   }
 
   void Rasterizer::drawPointAtAddress(unsigned char** p, unsigned long c) {

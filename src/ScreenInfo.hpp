@@ -39,17 +39,17 @@ namespace x3d {
     int ext_max_red, ext_max_green, ext_max_blue;
     char bytes_per_pixel;
     virtual unsigned long extToNative(int red, int green, int blue) = 0;
-    virtual ~ScreenInfo(void) {};
+    virtual ~ScreenInfo() {};
     // in case of palettes this is a map and possibly a palette alloc too
     // in case of rgb this is just a map to the rgb resolution
 
     // lookup tables for colors of light and fog
-    virtual void computeLightTable(void) = 0;
-    virtual void computeFogTable(void) = 0;
-    virtual void lightNative(unsigned char *pcolor, int intensity) = 0;
-    virtual void fogNative(unsigned char *pcolor, int intensity) = 0;
+    // TODO: virtual void computeLightTable(void) = 0;
+    // TODO: virtual void computeFogTable(void) = 0;
+    // TODO: virtual void lightNative(unsigned char *pcolor, int intensity) = 0;
+    // TODO: virtual void fogNative(unsigned char *pcolor, int intensity) = 0;
 
-    virtual void setColor(unsigned long col ) {};
+    // TODO: virtual void setColor(unsigned long col ) {};
     // currently only needed by mesa screeninfo, where we must call a glColor
     // function to set the color; otherwise with software rasterization we
     // set the colors in the frame buffer directly

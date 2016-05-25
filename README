@@ -1,1 +1,1 @@
-A new application of this graphics framework should inherit Pipeline. PipelineDemo is the starting point for the demo related code.
+See demo main() and any demo Applications for a starting point into the code.

@@ -16,7 +16,8 @@ namespace x3d {
   public:
     DispatcherXCB() : Dispatcher() {}
     DispatcherXCB(Pipeline* pipeline, EventSource* screen_xcb)
-      : _screen((ScreenXCB*)screen_xcb) {} // TODO: Verify pipeline and event_source get initialized
+      : Dispatcher(pipeline, screen_xcb) , _screen((ScreenXCB*)screen_xcb)
+    {} // TODO: Verify pipeline and event_source get initialized
     void start();
   };
 

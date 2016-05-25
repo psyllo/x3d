@@ -11,8 +11,7 @@ TEST_CASE("ScreenXCB init-open-close", "[xcb]") {
   ScreenXCB screen;
   // TODO: screen.setValueMask();
   // TODO: screen.setValueList();
-  bool init_ok = screen.init();
-  REQUIRE(init_ok);
+  REQUIRE(screen.isInitialized());
   REQUIRE(screen.open());
   REQUIRE(screen.close());
 }
