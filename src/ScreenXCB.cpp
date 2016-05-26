@@ -15,21 +15,59 @@
 
 namespace x3d {
 
+  void ScreenXCB::cacheWindowGeometry()  {
+    assert(connection);
+    assert(window);
+    window_geom = xcb_get_geometry_reply
+      (connection, xcb_get_geometry(connection, window), NULL);
+  }
+
+  short ScreenXCB::getWindowX()  {
+    if(window_geom) return window_geom->x;
+    else throw std::invalid_argument("window_geom is NULL");
+    return 0;
+  }
+
+  short ScreenXCB::getWindowY()  {
+    if(window_geom) return window_geom->y;
+    else throw std::invalid_argument("window_geom is NULL");
+    return 0;
+  }
+
+  unsigned short ScreenXCB::getWindowWidth()  {
+    if(window_geom) return window_geom->width;
+    else throw std::invalid_argument("window_geom is NULL");
+    return 0;
+  }
+
+  unsigned short ScreenXCB::getWindowHeight()  {
+    if(window_geom) return window_geom->height;
+    else throw std::invalid_argument("window_geom is NULL");
+    return 0;
+  }
+
+  unsigned short ScreenXCB::getWindowBorderWidth()  {
+    if(window_geom) return window_geom->border_width;
+    else throw std::invalid_argument("window_geom is NULL");
+    return 0;
+  }
+
   ScreenXCB::~ScreenXCB() {
+    if(connection) {
+      /*
+        Shm clean-up
+      */
+      xcb_shm_detach(connection, shm_info.shmseg); // Detach
+      shmdt(shm_info.shmaddr); // Detach
 
-    /*
-      Shm clean-up
-     */
-    xcb_shm_detach(connection, shm_info.shmseg); // Detach
-    shmdt(shm_info.shmaddr); // Detach
+      xcb_free_pixmap(connection, pixmap_id); // free on X server
 
-    xcb_free_pixmap(connection, pixmap_id); // free on X server
-
-    /*
-      Cleanup window and connection
-     */
-    xcb_destroy_window(connection, window);
-    xcb_disconnect(connection);
+      /*
+        Cleanup window and connection
+      */
+      if(window) xcb_destroy_window(connection, window);
+      xcb_disconnect(connection);
+    }
   }
 
   /*
@@ -82,13 +120,13 @@ namespace x3d {
                   window,
                   graphics_context,
                   0, 0, 0, 0,
-                  window_w, window_h);
+                  window_geom->width, window_geom->height);
   }
 
   /*
     Called from constructor
   */
-  bool ScreenXCB::initialize() {
+  bool ScreenXCB::initialize(unsigned short desired_window_width, unsigned short desired_window_height) {
     if(_initialized) return false;
 
     /* Open the connection to the X server */
@@ -122,12 +160,16 @@ namespace x3d {
                       XCB_COPY_FROM_PARENT,            /* depth (same as root)*/
                       window,                          /* window Id           */
                       screen->root,                    /* parent window       */
-                      window_x, window_y,              /* x, y                */
-                      window_w, window_h,              /* width, height       */
-                      border_width,                    /* border_width        */
+                      default_window_x,                /* x                   */
+                      default_window_y,                /* y                   */
+                      desired_window_width,            /* width               */
+                      desired_window_height,           /* height              */
+                      default_window_border_width,     /* border_width        */
                       XCB_WINDOW_CLASS_INPUT_OUTPUT,   /* class               */
                       screen->root_visual,             /* visual              */
                       win_value_mask, win_value_list); /* masks, value list   */
+
+    xcb_flush(connection);
 
     // NOTE: xcb_map_window() called in open(). We are just preparing here
 
@@ -184,6 +226,7 @@ namespace x3d {
   bool ScreenXCB::initGraphicsContext() {
     assert(connection);
     assert(screen);
+    assert(window);
 
     graphics_context = xcb_generate_id(connection);
     gc_value_mask = XCB_GC_FOREGROUND | XCB_GC_GRAPHICS_EXPOSURES;
@@ -201,6 +244,10 @@ namespace x3d {
     See: https://xcb.freedesktop.org/manual/shm_8h_source.html
   */
   bool ScreenXCB::initShm() {
+    cacheWindowGeometry();
+    assert(window_geom);
+    assert(sinfo);
+
     shm_version_reply = xcb_shm_query_version_reply
       (connection, xcb_shm_query_version(connection), NULL);
 
@@ -210,7 +257,7 @@ namespace x3d {
     }
 
     shm_info.shmid   = shmget(IPC_PRIVATE,
-                              window_w * window_h * bytespp,
+                              window_geom->width * window_geom->height * bytespp,
                               IPC_CREAT | 0777);
     shm_info.shmaddr = (uint8_t*)shmat(shm_info.shmid, NULL, 0); // NULL = auto allocate
 
@@ -224,7 +271,8 @@ namespace x3d {
     xcb_shm_create_pixmap(connection,
                           pixmap_id,
                           window,
-                          window_w, window_h,
+                          window_geom->width,
+                          window_geom->height,
                           screen->root_depth,
                           shm_info.shmseg,
                           0);
@@ -239,9 +287,6 @@ namespace x3d {
       BOOST_LOG_TRIVIAL(error) << "uninitialized";
       return false;
     }
-    assert(connection);
-    assert(screen);
-    assert(window);
     assert(initGraphicsContext());
     assert(initShm());
 

@@ -124,8 +124,8 @@ namespace x3d {
       }
       default:
         /* Unknown event type, ignore it */
-        printf ("Unknown event: %"PRIu8"\n",
-                event->response_type);
+        printf ("Unknown event: %"PRIu8" - window size %ix%i\n",
+                event->response_type, _screen->getWindowWidth(), _screen->getWindowHeight());
         break;
       }
 

@@ -57,7 +57,8 @@ namespace x3d {
     // TODO: LEFT_OFF
     assert(screen);
     ScreenInfo* screen_info = screen->getInfo(); // TODO: LEFT_OFF: making getInfo() work
-    Rasterizer* ras = new Rasterizer(screen_info, screen->getWidth(), screen->getHeight());
+    Rasterizer* ras = new Rasterizer(screen_info, screen->getWindowWidth(),
+                                     screen->getWindowHeight());
     PipelineXCBdemo* pipeline = new PipelineXCBdemo(ras, screen);
     FactoryManager fm;
     Dispatcher* dispatcher = fm.getDispatcherFactory()->create(pipeline, screen);

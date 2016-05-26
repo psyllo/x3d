@@ -21,30 +21,31 @@ namespace x3d {
 
   private:
     bool _initialized;
-    bool initialize();
+    bool _was_opened;
+
+    bool initialize(unsigned short desired_width, unsigned short desired_height);
     bool initGraphicsContext();
     bool initShm();
-    bool _was_opened;
 
   protected:
     // TODO: use unique_ptr/shared_ptr?
     xcb_connection_t* connection;
     xcb_window_t window;
     xcb_screen_t* screen;
-    short window_x, window_y;
-    unsigned short window_w, window_h;
-    unsigned short border_width;
+    xcb_get_geometry_reply_t* window_geom;
     ScreenInfo* sinfo; // contains offscreen shared memory buffer
     Polygon2D* view_win;
     unsigned char bytespp;
 
+    void cacheWindowGeometry(); // TODO: mark cache dirtly on XCB_EXPOSE event
+
   public:
     ScreenXCB() : ScreenXCB(default_window_w, default_window_h)
     { }
-    ScreenXCB(unsigned short window_width, unsigned short window_height)
+    ScreenXCB(unsigned short desired_window_width, unsigned short desired_window_height)
       : _initialized(false),
         _was_opened(false),
-        border_width(0),
+        window_geom(0),
         bytespp(0),
         connection(nullptr),
         gc_value_mask(0),
@@ -52,13 +53,9 @@ namespace x3d {
         pixmap_id(0),
         sinfo(nullptr),
         screen(nullptr),
-        window_h(window_height),
-        window_w(window_width),
-        window_x(0),
-        window_y(0),
         shm_version_reply(0),
         win_value_mask(0)
-    { initialize(); }
+    { initialize(desired_window_width, desired_window_height); }
     virtual ~ScreenXCB();
     virtual bool open();
     virtual bool close();
@@ -68,11 +65,13 @@ namespace x3d {
     xcb_connection_t* getXCBConnection() { return connection; } // TODO: breaks good abstraction
     xcb_window_t* getXCBWindow() { return &window; } // TODO: breaks good abstraction
     xcb_screen_t* getXCBscreen() { return screen; }; // TODO: breaks good abstraction
-    short getX() { return window_x; } // TODO: How is this determined?
-    short getY() { return window_y; } // TODO: How is this determined?
+    short getWindowX();
+    short getWindowY();
     unsigned short getWidth() { return screen->width_in_pixels; }
     unsigned short getHeight() { return screen->height_in_pixels; }
-    unsigned short getBorderWidth() { return border_width; }
+    unsigned short getWindowWidth();
+    unsigned short getWindowHeight();
+    unsigned short getWindowBorderWidth();
     ScreenInfo* getInfo() { return sinfo; }
     Polygon2D* getViewWin() { return view_win; }
     unsigned char getDepth() {assert(screen); screen->root_depth;}
@@ -111,8 +110,11 @@ namespace x3d {
     unsigned int win_value_list[WIN_VALUE_LIST_SIZE] = {0};
     // TODO: is the the best place to initialize win_value_list?
 
-    static const unsigned short default_window_w = 640;
-    static const unsigned short default_window_h = 480;
+    static const unsigned short default_window_x = 0;
+    static const unsigned short default_window_y = 0;
+    static const unsigned short default_window_w = 320;
+    static const unsigned short default_window_h = 240;
+    static const unsigned short default_window_border_width = 0;
 
     const static uint16_t default_event_mask =
       XCB_EVENT_MASK_EXPOSURE       | XCB_EVENT_MASK_BUTTON_PRESS   |
