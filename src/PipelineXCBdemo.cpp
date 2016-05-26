@@ -8,7 +8,7 @@ using namespace x3d;
 
 void PipelineXCBdemo::drawEvent() {
   assert(ras);
-  ras->drawPoint(10, 10, 100); // TODO: 100 is supposed to be a color
+  ras->drawPoint(50, 50, screen->getInfo()->extToNative(150, 150, 150));
   // TODO: LEFT_OFF: Use rasterizer to draw stuff
   screen->blit();
 }

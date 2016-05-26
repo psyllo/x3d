@@ -17,7 +17,7 @@ namespace x3d {
     ScreenInfoRgb(unsigned long red_mask, unsigned long green_mask,
                   unsigned long blue_mask, char bytes_per_pixel, char bytes_per_rgb);
 
-    // virtual ~ScreenInfoRgb() { }
+    virtual ~ScreenInfoRgb() { }
 
     virtual unsigned long extToNative(int red, int green, int blue);
 

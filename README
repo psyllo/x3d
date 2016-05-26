@@ -1,4 +1,6 @@
 See demo main() and any demo Applications for a starting point into the code.
 
-Will have to install xcb-dev on debian/ubuntu to get configure.ac
-pkg-config to work for xcb-shm.
+For the appropriate headers and pkg-config files on debian/ubuntu install:
+
+xcb-dev (xcb/shm.h)
+libxcb-image0-dev (xcb/xcb_image.h)

@@ -24,6 +24,10 @@ LT_INIT
 
 # Checks for header files.
 AC_CHECK_HEADERS([stdlib.h])
+AC_CHECK_HEADERS([sys/ipc.h])
+AC_CHECK_HEADERS([sys/shm.h])
+AC_CHECK_HEADERS([xcb/xcb_image.h])
+AC_CHECK_HEADERS([xcb/shm.h])
 AC_CHECK_HEADERS([xcb/xcb.h])
 
 
@@ -31,6 +35,7 @@ AC_CHECK_HEADERS([xcb/xcb.h])
 PKG_PROG_PKG_CONFIG
 PKG_CHECK_MODULES([XCB], [xcb >= 1.11])
 PKG_CHECK_MODULES([XCB_SHM], [xcb-shm >= 1.11])
+PKG_CHECK_MODULES([XCB_IMAGE], [xcb-image >= 0.4.0])
 
 AX_PTHREAD
 

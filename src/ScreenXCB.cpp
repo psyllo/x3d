@@ -10,9 +10,27 @@
 #include <boost/log/trivial.hpp>
 #include <cassert>
 #include <iostream>
-
+#include <sys/ipc.h>
+#include <sys/shm.h>
 
 namespace x3d {
+
+  ScreenXCB::~ScreenXCB() {
+
+    /*
+      Shm clean-up
+     */
+    xcb_shm_detach(connection, shm_info.shmseg); // Detach
+    shmdt(shm_info.shmaddr); // Detach
+
+    xcb_free_pixmap(connection, pixmap_id); // free on X server
+
+    /*
+      Cleanup window and connection
+     */
+    xcb_destroy_window(connection, window);
+    xcb_disconnect(connection);
+  }
 
   /*
     visual_type contains the visual structure, or a NULL visual
@@ -58,60 +76,13 @@ namespace x3d {
     return NULL;
   }
 
-  void ScreenXCB::createOffscreenBuffer() {
-    assert(sinfo);
-    assert(screen_w > 0);
-    assert(screen_h > 0);
-    assert(bytespp > 0);
-
-    buffer = new unsigned char [screen_w * screen_h * bytespp];
-    sinfo->p_screenbuf = buffer;
-  }
-
   void ScreenXCB::blit() {
-
-    // TODO: LEFT_OFF: Use xcb-shm and shm.h to create a shared pixmap
-    // on the X server. We write to it, and then copy it to the
-    // window. We have the p_screenbuf, but maybe we do not need
-    // it.
-    // See: l3d_0.4/source/app/lib/tool_2d/sc_x11sh.h
-    // See: A GOOD EXAMPLE: http://stackoverflow.com/questions/27745131/how-to-use-shm-pixmap-with-xcb
-    // See: https://xcb.freedesktop.org/manual/shm_8h_source.html
-    // See: https://xcb.freedesktop.org/manual/group__XCB__Shm__API.html#ga2c3c96121d4bb3f47ce6c4027756d181
-
-    // From: xcb/xproto.h
-    // xcb_void_cookie_t
-    //   xcb_put_image (xcb_connection_t *c,
-    //                  uint8_t           format,
-    //                  xcb_drawable_t    drawable,
-    //                  xcb_gcontext_t    gc,
-    //                  uint16_t          width,
-    //                  uint16_t          height,
-    //                  int16_t           dst_x,
-    //                  int16_t           dst_y,
-    //                  uint8_t           left_pad,
-    //                  uint8_t           depth,
-    //                  uint32_t          data_len,
-    //                  const uint8_t    *data);
-
-    // From: xcb/xproto.h
-    // typedef enum xcb_image_format_t {
-    //   XCB_IMAGE_FORMAT_XY_BITMAP = 0,
-    //   XCB_IMAGE_FORMAT_XY_PIXMAP = 1,
-    //   XCB_IMAGE_FORMAT_Z_PIXMAP = 2
-    // } xcb_image_format_t;
-
-
     xcb_copy_area(connection,
-                  pixmap_id,      /* drawable we want to paste */
-                  window,         /* drawable on which we copy the previous Drawable */
+                  pixmap_id,
+                  window,
                   graphics_context,
-                  0,              /* top left x coordinate of the region we want to copy */
-                  0,              /* top left y coordinate of the region we want to copy */
-                  0,              /* top left x coordinate of the region where we want to copy */
-                  0,              /* top left y coordinate of the region where we want to copy */
-                  screen_w,       /* TODO: hard-coded - pixel width of the region we want to copy */
-                  screen_h);      /* TODO: hard-coded - pixel height of the region we want to copy */
+                  0, 0, 0, 0,
+                  window_w, window_h);
   }
 
   /*
@@ -134,8 +105,31 @@ namespace x3d {
     }
 
     screen = xcb_setup_roots_iterator(xcb_get_setup(connection)).data;
-    // DELME: window = xcb_generate_id(connection);
-    window = screen->root;
+
+    win_value_mask = 0; // reset
+
+    // Background
+    win_value_mask |= XCB_CW_BACK_PIXEL;
+    win_value_list[0] = XCB_NONE; // XCB_NONE is black
+
+    // Which events to have sent from server
+    win_value_mask |= XCB_CW_EVENT_MASK;
+    win_value_list[1] = default_event_mask;
+
+    /* Create the window */
+    window = xcb_generate_id(connection);
+    xcb_create_window(connection,                      /* Connection          */
+                      XCB_COPY_FROM_PARENT,            /* depth (same as root)*/
+                      window,                          /* window Id           */
+                      screen->root,                    /* parent window       */
+                      window_x, window_y,              /* x, y                */
+                      window_w, window_h,              /* width, height       */
+                      border_width,                    /* border_width        */
+                      XCB_WINDOW_CLASS_INPUT_OUTPUT,   /* class               */
+                      screen->root_visual,             /* visual              */
+                      win_value_mask, win_value_list); /* masks, value list   */
+
+    // NOTE: xcb_map_window() called in open(). We are just preparing here
 
     bytespp = screen->root_depth / BITS_PER_BYTE;
 
@@ -177,45 +171,105 @@ namespace x3d {
       return false;
     }
 
-    createOffscreenBuffer();
-
     _initialized = true;
     return _initialized;
   }
 
+    
   /*
-    See: https://xcb.freedesktop.org/tutorial/basicwindowsanddrawing/
+    Setup Graphics Context
+
+    See: xcb_gc_t enum for XCB_GC_* (xcb/xproto.h).
+  */
+  bool ScreenXCB::initGraphicsContext() {
+    assert(connection);
+    assert(screen);
+
+    graphics_context = xcb_generate_id(connection);
+    gc_value_mask = XCB_GC_FOREGROUND | XCB_GC_GRAPHICS_EXPOSURES;
+    gc_value_list[0] = screen->black_pixel;
+    gc_value_list[1] = 0;
+    xcb_create_gc(connection, graphics_context, window, gc_value_mask, gc_value_list);
+
+    return true;
+  }
+
+  /*
+    Setup Shm (shared memory pixmap via shm.h, xcb/shm.h, xcb/xcb_image.h)
+    See: http://stackoverflow.com/questions/27745131/how-to-use-shm-pixmap-with-xcb
+    See: https://xcb.freedesktop.org/manual/group__XCB__Shm__API.html
+    See: https://xcb.freedesktop.org/manual/shm_8h_source.html
+  */
+  bool ScreenXCB::initShm() {
+    shm_version_reply = xcb_shm_query_version_reply
+      (connection, xcb_shm_query_version(connection), NULL);
+
+    if(!shm_version_reply || !shm_version_reply->shared_pixmaps){
+      BOOST_LOG_TRIVIAL(error) << "Shm error";
+      return false;
+    }
+
+    shm_info.shmid   = shmget(IPC_PRIVATE,
+                              window_w * window_h * bytespp,
+                              IPC_CREAT | 0777);
+    shm_info.shmaddr = (uint8_t*)shmat(shm_info.shmid, NULL, 0); // NULL = auto allocate
+
+    shm_info.shmseg = xcb_generate_id(connection);
+    xcb_shm_attach(connection, shm_info.shmseg, shm_info.shmid, 0);
+    shmctl(shm_info.shmid, IPC_RMID, 0);
+
+    sinfo->p_screenbuf = shm_info.shmaddr;
+
+    pixmap_id = xcb_generate_id(connection);
+    xcb_shm_create_pixmap(connection,
+                          pixmap_id,
+                          window,
+                          window_w, window_h,
+                          screen->root_depth,
+                          shm_info.shmseg,
+                          0);
+    return true;
+  }
+
+  /*
+    Can only be called after initialization
    */
   bool ScreenXCB::open() {
     if(!_initialized) {
       BOOST_LOG_TRIVIAL(error) << "uninitialized";
       return false;
     }
+    assert(connection);
     assert(screen);
+    assert(window);
+    assert(initGraphicsContext());
+    assert(initShm());
 
-    /* Create the window */
-    window = xcb_generate_id(connection);
-    xcb_create_window(connection,                    /* Connection          */
-                      XCB_COPY_FROM_PARENT,          /* depth (same as root)*/
-                      window,                        /* window Id           */
-                      screen->root,                  /* parent window       */
-                      screen_x, screen_y,            /* x, y                */
-                      screen_w, screen_h,            /* width, height       */
-                      border_width,                  /* border_width        */
-                      XCB_WINDOW_CLASS_INPUT_OUTPUT, /* class               */
-                      screen->root_visual,           /* visual              */
-                      value_mask, value_list);       /* masks, value_list   */
-
-    /* Map the window on the screen and flush */
+    // Mapping the window will do the opening
     xcb_map_window(connection, window);
     xcb_flush(connection);
 
-    // Get Graphics Context
-    // TODO: value_mask, value_list - see link below.
-    // See: https://xcb.freedesktop.org/manual/group__XCB____API.html#ga1b7addfaefc2d194314321ee1970d89d
-    graphics_context = xcb_generate_id (connection);
-    xcb_create_gc(connection, graphics_context, window, NULL, NULL); // TODO: populate NULL, NULL see above
+    // TODO: DELME: Some debug code
+    // int i = 0;
+    // while(1){
+    //   usleep(10000);
 
+    //   data[i] = 0xFF;
+    //   i++;
+
+    //   xcb_copy_area(
+    //                 connection,
+    //                 pixmap_id,
+    //                 window,
+    //                 graphics_context,
+    //                 0, 0, 0, 0,
+    //                 window_w, window_h
+    //                 );
+
+    //   xcb_flush(connection);
+    // }
+
+    _was_opened = true;
     return true;
   }
 
