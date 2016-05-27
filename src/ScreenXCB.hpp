@@ -22,10 +22,10 @@ namespace x3d {
   private:
     bool _initialized;
     bool _was_opened;
+    unsigned int _screen_buffer_size;
 
     bool initialize(unsigned short desired_width, unsigned short desired_height);
-    bool initGraphicsContext();
-    bool initShm();
+    void freeShmPixmap();
 
   protected:
     // TODO: use unique_ptr/shared_ptr?
@@ -36,8 +36,14 @@ namespace x3d {
     ScreenInfo* sinfo; // contains offscreen shared memory buffer
     Polygon2D* view_win;
     unsigned char bytespp;
+    const xcb_visualtype_t* vis;
 
+    xcb_connection_t* openConnection();
+    bool resetGraphicsContext();
+    bool resetShmPixmap();
     void cacheWindowGeometry(); // TODO: mark cache dirtly on XCB_EXPOSE event
+    void setupWindow(unsigned short desired_window_width,
+                     unsigned short desired_window_height);
 
   public:
     ScreenXCB() : ScreenXCB(default_window_w, default_window_h)
@@ -45,7 +51,7 @@ namespace x3d {
     ScreenXCB(unsigned short desired_window_width, unsigned short desired_window_height)
       : _initialized(false),
         _was_opened(false),
-        window_geom(0),
+        window_geom(nullptr),
         bytespp(0),
         connection(nullptr),
         gc_value_mask(0),
@@ -53,7 +59,8 @@ namespace x3d {
         pixmap_id(0),
         sinfo(nullptr),
         screen(nullptr),
-        shm_version_reply(0),
+        shm_version_reply(nullptr),
+        vis(nullptr),
         win_value_mask(0)
     { initialize(desired_window_width, desired_window_height); }
     virtual ~ScreenXCB();
@@ -62,35 +69,36 @@ namespace x3d {
     virtual void blit();
     bool isInitialized() {return _initialized;}
     bool wasOpened() {return _was_opened;}
+    static xcb_screen_t* getScreenOfDisplay(xcb_connection_t* connection, int screen_number);
+    static xcb_screen_t* findFirstScreen(xcb_connection_t* connection);
+    static int getConnectionNumber(xcb_connection_t* connection);
+    static int getScreenCount(xcb_connection_t* connection);
+    static char* getServerVendor(xcb_connection_t* connection);
+    static unsigned int getProtocolVersion(xcb_connection_t* connection);
+    static unsigned int getProtocolRevision(xcb_connection_t* connection);
+    static unsigned long getVendorRelease(xcb_connection_t* connection);
+    static unsigned char getScanlinePad(xcb_connection_t* connection);
+    static unsigned char getBitmapScanlineUnit(xcb_connection_t* connection);
+    static unsigned char getBitmapBitOrder(xcb_connection_t* connection);
+    static unsigned char getImageByteOrder(xcb_connection_t* connection);
     xcb_connection_t* getXCBConnection() { return connection; } // TODO: breaks good abstraction
     xcb_window_t* getXCBWindow() { return &window; } // TODO: breaks good abstraction
     xcb_screen_t* getXCBscreen() { return screen; }; // TODO: breaks good abstraction
     short getWindowX();
     short getWindowY();
-    unsigned short getWidth() { return screen->width_in_pixels; }
-    unsigned short getHeight() { return screen->height_in_pixels; }
+    unsigned short getWidth() { assert(screen); return screen->width_in_pixels; }
+    unsigned short getHeight() { assert(screen); return screen->height_in_pixels; }
     unsigned short getWindowWidth();
     unsigned short getWindowHeight();
     unsigned short getWindowBorderWidth();
     ScreenInfo* getInfo() { return sinfo; }
     Polygon2D* getViewWin() { return view_win; }
-    unsigned char getDepth() {assert(screen); screen->root_depth;}
-    xcb_visualid_t getVisualID() {assert(screen); screen->root_visual;}
-    const xcb_visualtype_t* getVisualType();
-    unsigned char getScanlinePad()
-    {assert(connection); return xcb_get_setup(connection)->bitmap_format_scanline_pad;}
-    unsigned char getBitmapScanlineUnit()
-    {assert(connection); return xcb_get_setup(connection)->bitmap_format_scanline_unit;}
-    unsigned char getBitmapBitOrder()
-    {assert(connection); return xcb_get_setup(connection)->bitmap_format_bit_order;}
-    unsigned char getImageByteOrder()
-    {assert(connection); return xcb_get_setup(connection)->image_byte_order;}
-    xcb_screen_t* screenOfDisplay(int screen_number);
-    void updateWindowAttributes() {
-      // TODO: write unit test
-      xcb_change_window_attributes(connection, window, win_value_mask, win_value_list);
-      xcb_flush(connection);
-    }
+    unsigned char getDepth() {assert(screen); return screen->root_depth;}
+    xcb_visualid_t getVisualID() {assert(screen); return screen->root_visual;}
+    static const xcb_visualtype_t* findVisualType(xcb_screen_t* screen);
+    void updateWindowAttributes();
+    void windowChanged();
+    unsigned int getScreenBufferLength() { return _screen_buffer_size; }
 
     /*
       Window value mask and value list
@@ -112,8 +120,8 @@ namespace x3d {
 
     static const unsigned short default_window_x = 0;
     static const unsigned short default_window_y = 0;
-    static const unsigned short default_window_w = 320;
-    static const unsigned short default_window_h = 240;
+    static const unsigned short default_window_w = 100;// put 320;
+    static const unsigned short default_window_h = 1;// put 240
     static const unsigned short default_window_border_width = 0;
 
     const static uint16_t default_event_mask =

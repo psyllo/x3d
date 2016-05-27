@@ -14,30 +14,36 @@ namespace x3d {
     return sinfo->p_screenbuf + sinfo->bytes_per_pixel * (width*y + x);
   }
 
-  inline void Rasterizer::drawPointAtAddress(unsigned char** p, unsigned long color) {
-    // TODO: LEFT_OFF
-
+  inline void Rasterizer::drawPointAtAddress(unsigned char** p, unsigned int color) {
     register int i;
-    unsigned long mask = MAX_BYTE;
-    char shift = 0;
 
-    // stuff the bytes in the unsigned long color into the screen buffer, in
-    // little-endian order
+    // One interation per byte in `color'
     for(i = 0; i < sinfo->bytes_per_pixel; i++) {
-      **p = (color & mask) >> shift;
-      (*p)++;
-      mask <<= BITS_PER_BYTE;
-      shift += BITS_PER_BYTE;
+      *(*p + i) = color;
+      color >>= BITS_PER_BYTE;
     }
+
+
+    // From L3D
+    // // stuff the bytes in the unsigned int color into the screen buffer, in
+    // // little-endian order
+    // register int i;
+    // unsigned int mask = MAX_BYTE;
+    // char shift = 0;
+    // for(i = 0; i < sinfo->bytes_per_pixel; i++) {
+    //   **p = (color & mask) >> shift;
+    //   (*p)++;
+    //   mask <<= BITS_PER_BYTE;
+    //   shift += BITS_PER_BYTE;
+    // }
   }
 
-  void Rasterizer::drawPoint(int x, int y, unsigned long color) {
+  void Rasterizer::drawPoint(int x, int y, unsigned int color) {
     unsigned char* point_address = addressOfPoint(x, y);
-    assert(point_address);
     drawPointAtAddress(&point_address, color);
   }
 
-  void drawLine(int x0, int y0, int x1, int y1, unsigned long color) {
+  void drawLine(int x0, int y0, int x1, int y1, unsigned int color) {
     // TODO: write function
   }
 

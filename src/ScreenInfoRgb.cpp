@@ -2,74 +2,57 @@
 
 /*
   See: l3d_0.4/source/app/lib/tool_2d/si_rgb.cc
- */
+*/
+
+#include "../config.h"
+#include <stdexcept>
+#include <math.h>
 
 namespace x3d {
 
   ScreenInfoRgb::ScreenInfoRgb
-  (unsigned long red_mask, unsigned long green_mask, unsigned long blue_mask,
-   char bytes_per_pixel, char bytes_per_rgb)
+  (unsigned int red_mask, unsigned int green_mask, unsigned int blue_mask,
+   unsigned char bytes_per_pixel, unsigned char bits_per_rgb)
     : red_mask(red_mask), green_mask(green_mask), blue_mask(blue_mask),
-      bytes_per_rgb(bytes_per_rgb)
-    {
-      this->bytes_per_pixel = bytes_per_pixel;
+      bits_per_rgb(bits_per_rgb)
+  {
+    this->bytes_per_pixel = bytes_per_pixel;
 
-      //- initial reasonable default values for external max rgb values; these
-      //- can be overridden just before actually reading rgb values from an
-      //- external source
-      ext_max_red = 255;
-      ext_max_green = 255;
-      ext_max_blue = 255;
+    unsigned int max_rgb_value = ((int)pow(2, bits_per_rgb)) - 1;
 
-      computeColorResolution();
-    }
-
-
-  unsigned long ScreenInfoRgb::extToNative(int red, int green, int blue) {
-    unsigned long red_rescaled, green_rescaled, blue_rescaled;
-
-    red_rescaled = red * red_max / ext_max_red;
-    green_rescaled = green * green_max / ext_max_green;
-    blue_rescaled = blue * blue_max / ext_max_blue;
-
-    return (red_rescaled<<red_shift)
-      | (green_rescaled<<green_shift)
-      | (blue_rescaled<<blue_shift);
+    ext_max_red = max_rgb_value;
+    ext_max_green = max_rgb_value;
+    ext_max_blue = max_rgb_value;
   }
 
-  void ScreenInfoRgb::computeColorResolution() {
-    int red_mask_tmp=red_mask,
-      green_mask_tmp=green_mask,
-      blue_mask_tmp=blue_mask;
-
-    // determine number of bits of resolution for r, g, and b
-
-    // note that the max values go from 0 to xxx_max, meaning the total
-    // count (as needed in for loops for instance) is xxx_max+1
-
-    for(red_shift=0;
-        (red_mask_tmp & 0x01) == 0 ;
-        red_shift++, red_mask_tmp>>=1);
-    for(red_max=1;
-        (red_mask_tmp & 0x01) == 1 ;
-        red_max*=2, red_mask_tmp>>=1);
-    red_max--;
-
-    for(green_shift=0;
-        (green_mask_tmp & 0x01) == 0 ;
-        green_shift++, green_mask_tmp>>=1);
-    for(green_max=1;
-        (green_mask_tmp & 0x01) == 1 ;
-        green_max*=2, green_mask_tmp>>=1);
-    green_max--;
-
-    for(blue_shift=0;
-        (blue_mask_tmp & 0x01) == 0 ;
-        blue_shift++, blue_mask_tmp>>=1);
-    for(blue_max=1;
-        (blue_mask_tmp & 0x01) == 1 ;
-        blue_max*=2, blue_mask_tmp>>=1);
-    blue_max--;
-
+  uint64_t ScreenInfoRgb::reverseBits(const uint64_t n, const uint64_t k)
+  {
+    uint64_t r, i;
+    for (r = 0, i = 0; i < k; ++i)
+      r |= ((n >> i) & 1) << (k - i - 1);
+    return r;
   }
+
+  unsigned int ScreenInfoRgb::reverseRGB(const unsigned int r_g_or_b_value) {
+    return reverseBits(r_g_or_b_value, bits_per_rgb);
+  }
+
+  unsigned int ScreenInfoRgb::extToNative(unsigned int red, unsigned int green, unsigned int blue) {
+    unsigned int val = 0;
+
+#if HAVE_XCB_XCB_H
+    // This works for XCB and probably Xlib
+    val = (red);
+    val <<= bits_per_rgb;
+    val += (green);
+    val <<= bits_per_rgb;
+    val += (blue);
+#else
+    // TODO: Write platform independent code
+    throw std::invalid_argument("Only X11 supported");
+#endif
+
+    return val;
+  }
+
 }

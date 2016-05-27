@@ -28,8 +28,8 @@ namespace x3d {
   // screeninfo, there I need an rgb color-settable with bufferpointer,
   // and there I need an indexed non-color-settable with bufferpointer).
 
-  constexpr int MAX_LIGHT_LEVELS = 255;
-  constexpr int NUM_LIGHT_LEVELS = MAX_LIGHT_LEVELS + 1;
+  constexpr unsigned int MAX_LIGHT_LEVELS = 255;
+  constexpr unsigned int NUM_LIGHT_LEVELS = MAX_LIGHT_LEVELS + 1;
 
   constexpr unsigned char BITS_PER_BYTE = 8; // From: l3d_0.4/source/app/lib/system/sys_dep.h
   constexpr unsigned char MAX_BYTE = 4; // From: l3d_0.4/source/app/lib/system/sys_dep.h
@@ -39,9 +39,9 @@ namespace x3d {
   // RGB of one byte.
 
   struct ScreenInfo {
-    int ext_max_red, ext_max_green, ext_max_blue;
-    char bytes_per_pixel;
-    virtual unsigned long extToNative(int red, int green, int blue) = 0;
+    unsigned int ext_max_red, ext_max_green, ext_max_blue;
+    unsigned char bytes_per_pixel;
+    virtual unsigned int extToNative(unsigned int red, unsigned int green, unsigned int blue) = 0;
     virtual ~ScreenInfo() {};
     // in case of palettes this is a map and possibly a palette alloc too
     // in case of rgb this is just a map to the rgb resolution
@@ -52,12 +52,12 @@ namespace x3d {
     // TODO: virtual void lightNative(unsigned char *pcolor, int intensity) = 0;
     // TODO: virtual void fogNative(unsigned char *pcolor, int intensity) = 0;
 
-    // TODO: virtual void setColor(unsigned long col ) {};
+    // TODO: virtual void setColor(unsigned int col ) {};
     // currently only needed by mesa screeninfo, where we must call a glColor
     // function to set the color; otherwise with software rasterization we
     // set the colors in the frame buffer directly
 
-    unsigned char *p_screenbuf;
+    unsigned char* p_screenbuf;
     // only needed by software screeninfo
 
   };

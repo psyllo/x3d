@@ -1,12 +1,13 @@
 #include "DispatcherXCB.hpp"
 
-#include <xcb/xcb.h>
-#include <cstdlib>
-#include <iostream>
 #include <cassert>
 #include <cinttypes>
 #include <cstdio>
 #include <cstdlib>
+#include <cstdlib>
+#include <iostream>
+#include <unistd.h>
+#include <xcb/xcb.h>
 
 namespace x3d {
 
@@ -50,11 +51,13 @@ namespace x3d {
       switch(event->response_type & ~0x80) {
 
       case XCB_EXPOSE: {
+        _screen->windowChanged();
 
         xcb_expose_event_t *expose = (xcb_expose_event_t *)event;
 
-        printf ("Window %"PRIu32" exposed. Region to be redrawn at location (%"PRIu16",%"PRIu16"), with dimension (%"PRIu16",%"PRIu16")\n",
-                expose->window, expose->x, expose->y, expose->width, expose->height );
+        printf ("Window %"PRIu32" exposed. Region to be redrawn at location (%"PRIu16",%"PRIu16"), with dimension (%"PRIu16",%"PRIu16") - window is %ix%i\n",
+                expose->window, expose->x, expose->y, expose->width, expose->height,
+                _screen->getWindowWidth(), _screen->getWindowHeight());
         break;
       }
       case XCB_BUTTON_PRESS: {
@@ -123,19 +126,26 @@ namespace x3d {
         break;
       }
       default:
+        // TODO: Unknown events are getting fired by xcb_copy_area()
+        // (during blit) creating continual loop with wait time for
+        // the next event. Not sure why or if this is a problem.
+
+        usleep(500); // TODO: DEBUG: sleep since this event might be firing so fast X locks up
+
+        // TODO: print all details of event - not sure why this one is being fired on blit()
+
         /* Unknown event type, ignore it */
-        printf ("Unknown event: %"PRIu8" - window size %ix%i\n",
-                event->response_type, _screen->getWindowWidth(), _screen->getWindowHeight());
+        // printf ("Unknown event: %"PRIu8" - window size %ix%i\n",
+        //         event->response_type, _screen->getWindowWidth(), _screen->getWindowHeight());
         break;
       }
 
-      // TODO: LEFT_OFF
       pipeline->updateEvent();
       pipeline->drawEvent();
 
-      /* flush the request */
+      // TODO: Is flush really needed? Is it going to ensure the
+      // screen updates before the next loop?
       xcb_flush(connection);
-      // NOTE: int xcb_aux_sync(xcb_connection_t *c) is the blocking version
 
       free(event);
     }
