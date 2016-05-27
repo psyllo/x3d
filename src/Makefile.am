@@ -21,7 +21,9 @@ ScreenInfo.hpp \
 ScreenInfoRgb.hpp \
 ScreenInfoRgb.cpp \
 ScreenXCB.cpp \
-ScreenXCB.hpp
+ScreenXCB.hpp \
+Util.hpp \
+Util.cpp
 
 demo_CPPFLAGS = $(PTHREAD_CFLAGS) $(CPPFLAGS)
 demo_CFLAGS = $(PTHREAD_CFLAGS) $(X11_CFLAGS) $(XCB_CFLAGS) $(XCB_SHM_CFLAGS) $(XCB_IMAGE_CFLAGS) $(CFLAGS)

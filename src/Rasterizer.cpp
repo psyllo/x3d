@@ -44,7 +44,7 @@ namespace x3d {
   }
 
   void drawLine(int x0, int y0, int x1, int y1, unsigned int color) {
-    // TODO: write function
+    // TODO: LEFT_OFF: write function to draw lines
   }
 
 }

@@ -164,18 +164,12 @@ namespace x3d {
     if(connection) xcb_shm_detach(connection, shm_info.shmseg); // Detach
     if(shm_info.shmaddr) shmdt(shm_info.shmaddr); // Detach
     if(connection && pixmap_id) xcb_free_pixmap(connection, pixmap_id); // free on X server
+    pixmap_id = 0;
+    shm_info = {0};
   }
 
   ScreenXCB::~ScreenXCB() {
-    freeShmPixmap();
-
-    /*
-      Cleanup window and connection
-    */
-    if(connection) {
-      if(window) xcb_destroy_window(connection, window);
-      xcb_disconnect(connection);
-    }
+    close();
   }
 
   /*
@@ -429,11 +423,17 @@ namespace x3d {
   }
 
   bool ScreenXCB::close() {
-    if(!_initialized) {
-      BOOST_LOG_TRIVIAL(error) << "uninitialized";
-      return false;
+    freeShmPixmap();
+
+    /*
+      Cleanup window and connection
+    */
+    if(connection) {
+      if(window) xcb_destroy_window(connection, window);
+      xcb_disconnect(connection);
+      connection = NULL;
+      window = 0;
     }
-    xcb_disconnect(connection);
     return true;
   }
 

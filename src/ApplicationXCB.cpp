@@ -54,9 +54,8 @@ namespace x3d {
   }
 
   void ApplicationXCB::eventLoop() {
-    // TODO: LEFT_OFF
     assert(screen);
-    ScreenInfo* screen_info = screen->getInfo(); // TODO: LEFT_OFF: making getInfo() work
+    ScreenInfo* screen_info = screen->getInfo();
     Rasterizer* ras = new Rasterizer(screen_info, screen->getWindowWidth(),
                                      screen->getWindowHeight());
     PipelineXCBdemo* pipeline = new PipelineXCBdemo(ras, screen);

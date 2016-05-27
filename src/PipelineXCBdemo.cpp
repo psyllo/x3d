@@ -9,8 +9,7 @@ using namespace x3d;
 void PipelineXCBdemo::drawEvent() {
   assert(ras);
 
-  // Draw some test colors in the upper left for testing RGB color
-  // generation code
+  // Draw pixels. This draws some colors in the upper left.
   for(int i = 0 ; i < 5; i++) {
     ras->drawPoint( 0 + i, 0, screen->getInfo()->extToNative(255, 255, 255));
     ras->drawPoint(10 + i, 0, screen->getInfo()->extToNative(255,   0, 0));
@@ -21,7 +20,8 @@ void PipelineXCBdemo::drawEvent() {
     ras->drawPoint(60 + i, 0, screen->getInfo()->extToNative(153,   0, 76));
   }
 
-  // TODO: LEFT_OFF: Use rasterizer to draw stuff
+  // Draw lines
+  // TODO: LEFT_OFF: Draw lines
 
   screen->blit();
 }
