@@ -22,6 +22,9 @@ void PipelineXCBdemo::drawEvent() {
 
   // Draw lines
   // TODO: LEFT_OFF: Draw lines
+  ras->drawLine(10, 10, 200, 200, screen->getInfo()->extToNative(204, 102, 0)); // diag
+  ras->drawLine(20, 10, 200, 200, screen->getInfo()->extToNative(178, 102, 255)); // x > y
+  ras->drawLine(10, 20, 200, 200, screen->getInfo()->extToNative(153,   0, 76)); // y > x
 
   screen->blit();
 }

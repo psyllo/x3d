@@ -114,14 +114,14 @@ namespace x3d {
     */
     unsigned int win_value_mask; // Mask values in xcb_cw_t enum
 
-    static const unsigned int WIN_VALUE_LIST_SIZE = 32;
+    static const unsigned int WIN_VALUE_LIST_SIZE = 32; // has extra of room
     unsigned int win_value_list[WIN_VALUE_LIST_SIZE] = {0};
     // TODO: is the the best place to initialize win_value_list?
 
     static const unsigned short default_window_x = 0;
     static const unsigned short default_window_y = 0;
-    static const unsigned short default_window_w = 100;// put 320;
-    static const unsigned short default_window_h = 1;// put 240
+    static const unsigned short default_window_w = 320;
+    static const unsigned short default_window_h = 240;
     static const unsigned short default_window_border_width = 0;
 
     const static uint16_t default_event_mask =
