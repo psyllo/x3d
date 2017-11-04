@@ -49,6 +49,7 @@ AX_BOOST_BASE
 #AX_BOOST_LOG_SETUP
 AX_BOOST_LOG
 AC_CHECK_HEADERS([boost/log/trivial.hpp])
+AC_CHECK_HEADERS([catch.hpp])
 
 AC_LANG_POP(C++)
 

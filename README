@@ -2,5 +2,12 @@ See demo main() and any demo Applications for a starting point into the code.
 
 For the appropriate headers and pkg-config files on debian/ubuntu install:
 
-xcb-dev (xcb/shm.h)
+apt-get install xcb-dev libxcb-shm0-dev libxcb-image0-dev libboost-all-dev
+
+xcb-dev
 libxcb-image0-dev (xcb/xcb_image.h)
+libxcb-shm0-dev (xcb/shm.h)
+libboost-log-dev (trivial.hpp)
+
+Testing dependecies:
+catch.hpp (https://github.com/catchorg/Catch2/blob/master/docs/tutorial.md#getting-catch2)
