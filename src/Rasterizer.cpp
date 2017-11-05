@@ -7,12 +7,15 @@
 
 #include <cassert>
 #include <algorithm>
+#include <stdexcept>
 
 namespace x3d {
 
   // TODO: unchecked boundary, no max-x nor max-y.
   unsigned char* Rasterizer::addressOfPoint(int x, int y) {
-    return sinfo->p_screenbuf + sinfo->bytes_per_pixel * (width*y + x);
+    if(x < width && y < height && x >= 0 && y >= 0)
+      return sinfo->p_screenbuf + sinfo->bytes_per_pixel * (width*y + x);
+    throw std::invalid_argument("Requested point is outside of screen buffer");
   }
 
   inline void Rasterizer::drawPointAtAddress(unsigned char** p, unsigned int color) {
@@ -26,8 +29,10 @@ namespace x3d {
   }
 
   void Rasterizer::drawPoint(int x, int y, unsigned int color) {
-    unsigned char* point_address = addressOfPoint(x, y);
-    drawPointAtAddress(&point_address, color);
+    if(x < width && y < height && x >= 0 && y >= 0) {
+      unsigned char* point_address = addressOfPoint(x, y);
+      drawPointAtAddress(&point_address, color);
+    }
   }
 
   /*
@@ -54,7 +59,7 @@ namespace x3d {
                   color);
         fy = fy + m;
       }
-    } //- mostly horizontal line
+    }
     else { //- mostly vertical line
       //- ensure (x0,y0) is vertically smaller than (x1,y1)
       if(y1<y0) { tmp=x0;x0=x1;x1=tmp; tmp=y0;y0=y1;y1=tmp;}
@@ -67,7 +72,16 @@ namespace x3d {
                   color);
         fx = fx + m;
       }
-    } //- mostly vertical line
+    }
+  }
+
+  void Rasterizer::drawCircle(float r, int x, int y) {
+    double increment = 1/r;
+    for(double i = 0.0; i < 2* 3.14; i += increment) {
+      drawPoint((int)x+cos(i)*r,
+                (int)y+sin(i)*r,
+                sinfo->extToNative(204, 102, 0));
+    }
   }
 
 }

@@ -3,6 +3,8 @@ demo_SOURCES = main.cpp \
 Application.hpp \
 ApplicationXCB.cpp \
 ApplicationXCB.hpp \
+CartesianApp.hpp \
+CartesianApp.cpp \
 Dispatcher.hpp \
 DispatcherXCB.cpp \
 DispatcherXCB.hpp \

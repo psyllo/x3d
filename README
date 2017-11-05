@@ -2,7 +2,7 @@ See demo main() and any demo Applications for a starting point into the code.
 
 For the appropriate headers and pkg-config files on debian/ubuntu install:
 
-apt-get install xcb-dev libxcb-shm0-dev libxcb-image0-dev libboost-all-dev
+apt-get install xcb-dev libxcb-shm0-dev libxcb-image0-dev libboost-log-dev
 
 xcb-dev
 libxcb-image0-dev (xcb/xcb_image.h)
