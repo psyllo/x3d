@@ -10,7 +10,7 @@
 #include <cassert>
 #include <memory>
 
-#include "PipelineXCBdemo.hpp"
+#include "PipelineXCBCartesian.hpp"
 
 namespace x3d {
 
@@ -58,7 +58,7 @@ namespace x3d {
     ScreenInfo* screen_info = screen->getInfo();
     Rasterizer* ras = new Rasterizer(screen_info, screen->getWindowWidth(),
                                      screen->getWindowHeight());
-    PipelineXCBdemo* pipeline = new PipelineXCBdemo(ras, screen);
+    PipelineXCBCartesian* pipeline = new PipelineXCBCartesian(ras, screen);
     FactoryManager fm;
     Dispatcher* dispatcher = fm.getDispatcherFactory()->create(pipeline, screen);
     dispatcher->start();

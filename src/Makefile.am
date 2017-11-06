@@ -13,6 +13,8 @@ FactoryManager.cpp \
 FactoryManager.hpp \
 PipelineXCBdemo.cpp \
 PipelineXCBdemo.hpp \
+PipelineXCBCartesian.cpp \
+PipelineXCBCartesian.hpp \
 Pipeline.hpp \
 Polygon2D.hpp \
 Polygon2D.cpp \
