@@ -19,6 +19,8 @@ protected:
   void drawLine(int x0, int y0, int x1, int y1);
   void drawAxis();
   void drawCircle(float r, int x, int y);
+  //void drawFunction(int (*f)(int x));
+  void drawFunction(double (*f)(double), double range_start, double range_end);
   // void drawFunction(UnaryFunction f);
 public:
   PipelineXCBCartesian(Rasterizer *r, Screen* screen)

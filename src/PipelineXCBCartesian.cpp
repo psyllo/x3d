@@ -3,6 +3,7 @@
 #include "Rasterizer.hpp"
 #include <iostream>
 #include <cassert>
+#include <algorithm>
 
 using namespace x3d;
 
@@ -35,9 +36,18 @@ void PipelineXCBCartesian::drawCircle(float r, int x, int y) {
   ras->drawCircle(r, x + (ras->width-1)/2, -y + (ras->height-1)/2);
 }
 
-// void PipelineXCBCartesian::drawFunction(UnaryFunction f) {
-  
-//}
+void PipelineXCBCartesian::drawFunction(double (*f)(double),
+                                        double range_start, double range_end)
+{
+  for(int i = -ras->width/2; i < ras->width/2; i++) {
+    double x = i * (range_end - range_start) / ras->width;
+    double y = (*f)(x) * 50;
+    drawPoint(i, (int)y);
+  }
+}
+
+// void cosine(float rad){
+// }
 
 void PipelineXCBCartesian::drawEvent() {
   assert(ras);
@@ -49,7 +59,9 @@ void PipelineXCBCartesian::drawEvent() {
   drawLine(-10, -10, -100, -50);
   drawLine( 10,  10,  100,  50);
 
-  drawCircle(10, 25, 25);
+  drawCircle(50, 25, 25);
+
+  drawFunction(cos, -3.14 * 3, 3.14 * 3);
 
   screen->blit();
 }
