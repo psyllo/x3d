@@ -17,7 +17,8 @@ protected:
   int ycoord(int y);
   void drawPoint(int x, int y);
   void drawLine(int x0, int y0, int x1, int y1);
-  void drawCoords();
+  void drawAxis();
+  void drawCircle(float r, int x, int y);
   // void drawFunction(UnaryFunction f);
 public:
   PipelineXCBCartesian(Rasterizer *r, Screen* screen)

@@ -24,11 +24,15 @@ void PipelineXCBCartesian::drawLine(int x0, int y0, int x1, int y1) {
                 screen->getInfo()->extToNative(204, 102, 0));
 }
 
-void PipelineXCBCartesian::drawCoords() {
+void PipelineXCBCartesian::drawAxis() {
   ras->drawLine(0, ras->height/2, ras->width-1, ras->height/2,
                 screen->getInfo()->extToNative(204, 102, 0));
   ras->drawLine(ras->width/2, 0, ras->width/2, ras->height-1,
                 screen->getInfo()->extToNative(204, 102, 0));
+}
+
+void PipelineXCBCartesian::drawCircle(float r, int x, int y) {
+  ras->drawCircle(r, x + (ras->width-1)/2, -y + (ras->height-1)/2);
 }
 
 // void PipelineXCBCartesian::drawFunction(UnaryFunction f) {
@@ -38,14 +42,14 @@ void PipelineXCBCartesian::drawCoords() {
 void PipelineXCBCartesian::drawEvent() {
   assert(ras);
 
-  drawCoords();
+  drawAxis();
 
   drawLine(-10,  10, -100,  50);
   drawLine( 10, -10,  100, -50);
   drawLine(-10, -10, -100, -50);
   drawLine( 10,  10,  100,  50);
 
-  ras->drawCircle(10, 160, 160);
+  drawCircle(10, 25, 25);
 
   screen->blit();
 }
