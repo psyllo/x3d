@@ -39,29 +39,42 @@ void PipelineXCBCartesian::drawCircle(float r, int x, int y) {
 void PipelineXCBCartesian::drawFunction(double (*f)(double),
                                         double range_start, double range_end)
 {
-  for(int i = -ras->width/2; i < ras->width/2; i++) {
-    double x = i * (range_end - range_start) / ras->width;
-    double y = (*f)(x) * 50;
-    drawPoint(i, (int)y);
+  int end_x   = ras->width/2;
+  int start_x = -end_x;
+  int x, y, y_prev, y_diff = 0;
+  double f_arg, f_result = 0.0;
+  for(x = start_x; x < end_x; x++) {
+    f_arg = x * (range_end - range_start) / ras->width;
+    f_result = (*f)(f_arg) * 50; // TODO: scale this by some other arg or state
+    y = f_result; // TODO: Not rounding up looks better?
+    y_diff = y - y_prev;
+    if(x == start_x) {
+      drawPoint(x, y);
+    }else if(y_diff > 1) {
+      drawLine(x, y + 1, x, y);
+    }else if(y_diff < -1){
+      drawLine(x, y - 1, x, y);
+    }else{
+      drawPoint(x, y);
+    }
+    y_prev = y;
   }
 }
-
-// void cosine(float rad){
-// }
 
 void PipelineXCBCartesian::drawEvent() {
   assert(ras);
 
-  drawAxis();
+  // drawAxis();
 
-  drawLine(-10,  10, -100,  50);
-  drawLine( 10, -10,  100, -50);
-  drawLine(-10, -10, -100, -50);
-  drawLine( 10,  10,  100,  50);
+  // drawLine(10,  10, 10, 5);
+  // drawLine( 10, -10,  100, -50);
+  // drawLine(-10, -10, -100, -50);
+  // drawLine( 10,  10,  100,  50);
 
-  drawCircle(50, 25, 25);
+  //drawCircle(50, 25, 25);
 
-  drawFunction(cos, -3.14 * 3, 3.14 * 3);
+  // drawFunction(cos, -3.14 * 3, 3.14 * 3);
+  drawFunction(sin, -3.14 * 3, 3.14 * 3);
 
   screen->blit();
 }
