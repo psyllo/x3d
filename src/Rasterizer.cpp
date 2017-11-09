@@ -75,12 +75,12 @@ namespace x3d {
     }
   }
 
-  void Rasterizer::drawCircle(float r, int x, int y) {
+  void Rasterizer::drawCircle(float r, int x, int y, unsigned int color) {
     double increment = 1/r;
     for(double i = 0.0; i < 2* 3.14; i += increment) {
       drawPoint((int)x+cos(i)*r,
                 (int)y+sin(i)*r,
-                sinfo->extToNative(204, 102, 0));
+                color);
     }
   }
 

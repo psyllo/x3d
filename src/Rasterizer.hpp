@@ -20,7 +20,7 @@ namespace x3d {
     virtual ~Rasterizer() { }
     void drawPoint(int x, int y, unsigned int color);
     void drawLine(int x0, int y0, int x1, int y1, unsigned int color);
-    void drawCircle(float r, int x, int y);
+    void drawCircle(float r, int x, int y, unsigned int color);
 
   protected:
     unsigned char* addressOfPoint(int x, int y);

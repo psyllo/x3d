@@ -36,7 +36,7 @@ void PipelineXCBCartesian::drawAxis() {
 }
 
 void PipelineXCBCartesian::drawCircle(float r, int x, int y, unsigned int color) {
-  ras->drawCircle(r, x + (ras->width-1)/2, -y + (ras->height-1)/2);
+  ras->drawCircle(r, x + (ras->width-1)/2, -y + (ras->height-1)/2, color);
 }
 
 void PipelineXCBCartesian::drawFunction(double (*f)(double),
@@ -79,7 +79,9 @@ void PipelineXCBCartesian::drawEvent() {
   // drawLine(-10, -10, -100, -50, rgbColor(33, 160, 200));
   // drawLine( 10,  10,  100,  50, rgbColor(33, 160, 200));
 
-  //drawCircle(50, 25, 25, rgbColor(0, 255, 0));
+  drawCircle(50, 25, 25, rgbColor(88, 34, 100));
+  drawCircle(70, -20, -20, rgbColor(0, 255, 0));
+
 
   drawFunction(cos, -3.14 * 3, 3.14 * 3, rgbColor(255, 0, 0));
   drawFunction(sin, -3.14 * 3, 3.14 * 3, rgbColor(0, 150, 0));

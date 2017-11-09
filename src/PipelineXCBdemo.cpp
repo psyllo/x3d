@@ -26,7 +26,7 @@ void PipelineXCBdemo::drawEvent() {
   ras->drawLine(20, 10, 200, 200, screen->getInfo()->extToNative(178, 102, 255)); // x > y
   ras->drawLine(10, 20, 200, 200, screen->getInfo()->extToNative(153,   0, 76)); // y > x
 
-  ras->drawCircle(165, 160, 160);
+  ras->drawCircle(165, 160, 160, screen->getInfo()->extToNative(88, 34, 10));
 
   screen->blit();
 }
