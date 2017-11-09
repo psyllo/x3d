@@ -13,15 +13,17 @@ class PipelineXCBCartesian : public Pipeline {
 protected:
   Rasterizer* ras;
   Screen* screen;
+  unsigned int rgbColor(int r, int g, int b);
   int xcoord(int x);
   int ycoord(int y);
-  void drawPoint(int x, int y);
-  void drawLine(int x0, int y0, int x1, int y1);
+  void drawPoint(int x, int y, unsigned int color);
+  void drawLine(int x0, int y0, int x1, int y1, unsigned int color);
   void drawAxis();
-  void drawCircle(float r, int x, int y);
+  void drawCircle(float r, int x, int y, unsigned int color);
   //void drawFunction(int (*f)(int x));
+  void drawFunction(double (*f)(double), double range_start, double range_end,
+                    unsigned int color);
   void drawFunction(double (*f)(double), double range_start, double range_end);
-  // void drawFunction(UnaryFunction f);
 public:
   PipelineXCBCartesian(Rasterizer *r, Screen* screen)
     : _done(false), ras(r), screen(screen) { }
