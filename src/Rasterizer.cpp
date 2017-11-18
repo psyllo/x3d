@@ -9,8 +9,6 @@
 #include <algorithm>
 #include <stdexcept>
 
-int printed = 0;
-
 namespace x3d {
 
   // TODO: unchecked boundary, no max-x nor max-y.
@@ -89,25 +87,26 @@ namespace x3d {
   void Rasterizer::drawTriangle(float x0, float y0, float x1, float y1, float x2, float y2,
                                 unsigned int color)
   {
-    float x_tmp;
-    float y_tmp;
+    // Sort points by x value, smallest to largest:
+    {
+      float x_tmp;
+      float y_tmp;
 
-    if(!printed) {
-      printf("BEFORE: x0[%f],y0[%f],x1[%f],y1[%f],x2[%f],y2[%f]\n", x0,y0,x1,y1,x2,y2);
-    }
-
-    if(x2 < x0) {
-      x_tmp = x0;
-      y_tmp = y0;
-      x0 = x2;
-      y0 = y2;
-      x2 = x_tmp;
-      y2 = y_tmp;
       if(x1 < x0) {
         x_tmp = x0;
         y_tmp = y0;
         x0 = x1;
         y0 = y1;
+        x1 = x_tmp;
+        y1 = y_tmp;
+      }
+      if(x2 < x0) {
+        x_tmp = x0;
+        y_tmp = y0;
+        x0 = x2;
+        y0 = y2;
+        x2 = x1;
+        y2 = x1;
         x1 = x_tmp;
         y1 = y_tmp;
       }else if(x2 < x1) {
@@ -118,17 +117,6 @@ namespace x3d {
         x2 = x_tmp;
         y2 = y_tmp;
       }
-    }else if(x2 < x1) {
-        x_tmp = x1;
-        y_tmp = y1;
-        x1 = x2;
-        y1 = y2;
-        x2 = x_tmp;
-        y2 = y_tmp;
-    }
-
-    if(!printed) {
-      printf("AFTER: x0[%f],y0[%f],x1[%f],y1[%f],x2[%f],y2[%f]\n", x0,y0,x1,y1,x2,y2);
     }
 
     int width = x1 - x0;
@@ -139,9 +127,6 @@ namespace x3d {
     }
     int width2 = x2 - x1;
     slope = (y2-y1)/(x2-x1);
-    if(printed++ == 0) { 
-      printf("slope[%f],x0[%f],y0[%f],x1[%f],y1[%f],x2[%f],y2[%f]\n", slope, x0,y0,x1,y1,x2,y2);
-    }
     for(float i = 0; i < width2; i++) {
       drawLine(x1+i, y0+(i+width)*base_slope, x1+i, y1+i*slope, color);
     }
