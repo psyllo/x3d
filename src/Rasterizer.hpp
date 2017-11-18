@@ -21,6 +21,9 @@ namespace x3d {
     void drawPoint(int x, int y, unsigned int color);
     void drawLine(int x0, int y0, int x1, int y1, unsigned int color);
     void drawCircle(float r, int x, int y, unsigned int color);
+    void drawTriangle(float x0, float y0, float x1, float y1, float x2, float y2,
+                      unsigned int color);
+    void drawImage(char* path, int x, int y, int width, int height); // TODO
 
   protected:
     unsigned char* addressOfPoint(int x, int y);
