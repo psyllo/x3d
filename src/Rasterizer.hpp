@@ -23,12 +23,15 @@ namespace x3d {
     Rasterizer(ScreenInfo *screen_info, unsigned short screen_width, unsigned short screen_height) 
       : sinfo(screen_info), width(screen_width), height(screen_height) { }
     virtual ~Rasterizer() { }
-    void drawPoint(int x, int y, unsigned int color);
-    void drawLine(int x0, int y0, int x1, int y1, unsigned int color);
+    void drawPoint(  int  x,   int  y, unsigned int color);
+    void drawPoint(float  x, float  y, unsigned int color);
+    void drawPoints(point2_t **ps, unsigned int length, unsigned int color);
+    void drawLine(int   x0,   int y0,   int x1,   int y1, unsigned int color);
+    void drawLine(float x0, float y0, float x1, float y1, unsigned int color);
     void drawCircle(float r, int x, int y, unsigned int color);
     void drawTriangle(float x0, float y0, float x1, float y1, float x2, float y2,
                       unsigned int color);
-    void drawPolygon(point2_t **p, unsigned int length, unsigned int color);
+    void drawPolygon(point2_t **ps, unsigned int length, unsigned int color);
     void drawImage(char* path, int x, int y, int width, int height); // TODO
 
     // effects

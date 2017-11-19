@@ -37,9 +37,20 @@ namespace x3d {
     }
   }
 
+  void Rasterizer::drawPoint(float x, float y, unsigned int color) {
+    // NOTE: opportunity to standardize rounding for points here
+    drawPoint((int)x, (int)y, color);
+  }
+
+  void Rasterizer::drawPoints(point2_t **ps, unsigned int length, unsigned int color) {
+    for(int i = 0; i < length; i++) {
+      drawPoint(ps[i]->x, ps[i]->y, color);
+    }
+  }
+
   /*
      See: l3d_0.4/source/app/lib/raster/ras_sw.cc
-   */
+  */
   void Rasterizer::drawLine(int x0, int y0, int x1, int y1, unsigned int color) {
     float fx,fy,m;
     int x,y,tmp,dx,dy;
@@ -54,8 +65,8 @@ namespace x3d {
       m = (float)dy / (float)dx;
       for(x=x0; x<=x1; x++) {
         drawPoint(x,
-                  (height, // TODO: Y-reversal?
-                   (int) (fy+0.5)),
+                  (int)(height, // TODO: Y-reversal?
+                        (int) (fy+0.5)),
                   color);
         fy = fy + m;
       }
@@ -68,19 +79,23 @@ namespace x3d {
       m = (float)dx / (float)dy;
       for(y=y0; y<=y1; y++) {
         drawPoint((int)fx+0.5,
-                  (height,y), // TODO: Y-reversal?
+                  (int)(height,y), // TODO: Y-reversal?
                   color);
         fx = fx + m;
       }
     }
   }
 
+  void Rasterizer::drawLine(float x0, float y0, float x1, float y1, unsigned int color) {
+    // NOTE: opportunity to standardize rounding for lines here
+    drawLine((int)x0, (int)y0, (int)x1, (int)y1, color);
+  }
+
+
   void Rasterizer::drawCircle(float r, int x, int y, unsigned int color) {
-    double increment = 1/r;
-    for(double i = 0.0; i < 2* 3.14; i += increment) {
-      drawPoint((int)x+cos(i)*r,
-                (int)y+sin(i)*r,
-                color);
+    float increment = 1/r;
+    for(float i = 0.0; i < 2* 3.14; i += increment) {
+      drawPoint((float)(x+cos(i)*r), (float)(y+sin(i)*r), color);
     }
   }
 
@@ -157,21 +172,18 @@ namespace x3d {
     printf("\n");
   }
 
-  int printed_points = 0;
-
   void Rasterizer::drawPolygon(point2_t **ps, unsigned int length, unsigned int color) {
-    // TODO: write this next
-    if(!printed_points) {
-      printed_points = 1;
-      printPoints2("BEFORE", ps, length);
-      sortPoints2(ps, length);
-      printPoints2("AFTER@", ps, length);
-    }
-    if(length < 3) { printf("Oops polygon has less than 3 points"); return; }
-    //point2_t *p;
+    sortPoints2(ps, length);
+    if(length == 0) return;
+    if(length == 1) { drawPoint(ps[0]->x, ps[0]->y, color); return; }
+    if(length == 2) { drawLine(ps[0]->x, ps[0]->y, ps[1]->x, ps[1]->y, color); return; }
+
     drawTriangle(ps[0]->x, ps[0]->y, ps[1]->x, ps[1]->y, ps[2]->x, ps[2]->y, color);
-    for(int i = 0; (i + 2) < length; i++) {
-      drawTriangle(ps[0+i]->x, ps[0+i]->y, ps[1+i]->x, ps[1+i]->y, ps[2+i]->x, ps[2+i]->y, color);
+
+    if(length == 3) return;
+
+    for(int i = 3; i < length; i++) {
+      drawTriangle(ps[i-2]->x, ps[i-2]->y, ps[i-1]->x, ps[i-1]->y, ps[i]->x, ps[i]->y, color);
     }
   }
 
