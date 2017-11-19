@@ -29,12 +29,29 @@ void PipelineXCBdemo::drawEvent() {
   ras->drawCircle(165, 160, 160, screen->getInfo()->extToNative(88, 34, 10));
 
   // Draw Triangle
-  ras->drawTriangle(0, 0, 100, 150, 300, 200, screen->getInfo()->extToNative(248, 202, 40));
-  ras->pointillation = 2;
-  ras->drawTriangle(200, 200, 100, 100, 9, 221, screen->getInfo()->extToNative(178, 102, 255));
-  ras->pointillation = 3;
-  ras->drawTriangle(50, 50, 90, 150, 290, 20, screen->getInfo()->extToNative(100, 230, 100));
-  ras->pointillation = 0;
+  // ras->drawTriangle(0, 0, 100, 150, 300, 200, screen->getInfo()->extToNative(248, 202, 40));
+  // ras->pointillation = 2;
+  // ras->drawTriangle(200, 200, 100, 100, 9, 221, screen->getInfo()->extToNative(178, 102, 255));
+  // ras->pointillation = 3;
+  // ras->drawTriangle(50, 50, 90, 150, 290, 20, screen->getInfo()->extToNative(100, 230, 100));
+  // ras->pointillation = 0;
+
+  // Draw Polygon
+  point2_t** ps = (point2_t**) malloc(4 * sizeof(point2_t*));
+  ps[0] = (point2_t*) malloc(sizeof(point2_t));
+  ps[1] = (point2_t*) malloc(sizeof(point2_t));
+  ps[2] = (point2_t*) malloc(sizeof(point2_t));
+  ps[3] = (point2_t*) malloc(sizeof(point2_t));
+  ps[0]->x = 100;
+  ps[0]->y = 100;
+  ps[1]->x = 150;
+  ps[1]->y = 100;
+  ps[2]->x = 200;
+  ps[2]->y = 180;
+  ps[3]->x = 250;
+  ps[3]->y = 250;
+
+  ras->drawPolygon(ps, 4, screen->getInfo()->extToNative(160, 160, 160));
 
   // Draw images
   // ras->drawImage("/usr/share/pixmaps/faces/baseball.jpg", 0, 0, 200, 200);

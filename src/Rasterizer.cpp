@@ -132,8 +132,47 @@ namespace x3d {
     }
   }
 
-  void Rasterizer::drawPolygon(int *p, unsigned int color) {
+  static int point2_comparator(const void *a_arg, const void *b_arg) {
+    const point2_t *a = *(const point2_t**)a_arg;
+    const point2_t *b = *(const point2_t**)b_arg;
+
+    if (a->x < b->x) {
+      return -1;
+    }
+    if (a->x > b->x) {
+      return 1;
+    }
+    return 0;
+  }
+
+  void sortPoints2(point2_t **p, unsigned int length) {
+    qsort(p, length, sizeof(point2_t *), point2_comparator);
+  }
+
+  void printPoints2(const char *label, point2_t **ps, unsigned int length) {
+    for(int i = 0; i < length; i++) {
+      point2_t *p = ps[i];
+      printf("%s: [%f,%f]\n", label, p->x, p->y);
+    }
+    printf("\n");
+  }
+
+  int printed_points = 0;
+
+  void Rasterizer::drawPolygon(point2_t **ps, unsigned int length, unsigned int color) {
     // TODO: write this next
+    if(!printed_points) {
+      printed_points = 1;
+      printPoints2("BEFORE", ps, length);
+      sortPoints2(ps, length);
+      printPoints2("AFTER@", ps, length);
+    }
+    if(length < 3) { printf("Oops polygon has less than 3 points"); return; }
+    //point2_t *p;
+    drawTriangle(ps[0]->x, ps[0]->y, ps[1]->x, ps[1]->y, ps[2]->x, ps[2]->y, color);
+    for(int i = 0; (i + 2) < length; i++) {
+      drawTriangle(ps[0+i]->x, ps[0+i]->y, ps[1+i]->x, ps[1+i]->y, ps[2+i]->x, ps[2+i]->y, color);
+    }
   }
 
   void Rasterizer::drawImage(char* path, int x, int y, int width, int height) {

@@ -10,6 +10,11 @@
 
 namespace x3d {
 
+  typedef struct {
+    float x;
+    float y;
+  } point2_t;
+
   class Rasterizer {
 
   public:
@@ -23,7 +28,7 @@ namespace x3d {
     void drawCircle(float r, int x, int y, unsigned int color);
     void drawTriangle(float x0, float y0, float x1, float y1, float x2, float y2,
                       unsigned int color);
-    void drawPolygon(int *p, unsigned int color);
+    void drawPolygon(point2_t **p, unsigned int length, unsigned int color);
     void drawImage(char* path, int x, int y, int width, int height); // TODO
 
     // effects
