@@ -29,6 +29,8 @@ namespace x3d {
   }
 
   void Rasterizer::drawPoint(int x, int y, unsigned int color) {
+    if(pointillation > 1 && ((x % pointillation) != 0 || (y % pointillation) == 0))
+      return;
     if(x < width && y < height && x >= 0 && y >= 0) {
       unsigned char* point_address = addressOfPoint(x, y);
       drawPointAtAddress(&point_address, color);
@@ -37,8 +39,6 @@ namespace x3d {
 
   /*
      See: l3d_0.4/source/app/lib/raster/ras_sw.cc
-
-     TODO: LEFT_OFF: write function to draw lines
    */
   void Rasterizer::drawLine(int x0, int y0, int x1, int y1, unsigned int color) {
     float fx,fy,m;
@@ -130,6 +130,10 @@ namespace x3d {
     for(float i = 0; i < width2; i++) {
       drawLine(x1+i, y0+(i+width)*base_slope, x1+i, y1+i*slope, color);
     }
+  }
+
+  void Rasterizer::drawPolygon(int *p, unsigned int color) {
+    // TODO: write this next
   }
 
   void Rasterizer::drawImage(char* path, int x, int y, int width, int height) {

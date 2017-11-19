@@ -23,8 +23,11 @@ namespace x3d {
     void drawCircle(float r, int x, int y, unsigned int color);
     void drawTriangle(float x0, float y0, float x1, float y1, float x2, float y2,
                       unsigned int color);
+    void drawPolygon(int *p, unsigned int color);
     void drawImage(char* path, int x, int y, int width, int height); // TODO
 
+    // effects
+    int pointillation = 0;
   protected:
     unsigned char* addressOfPoint(int x, int y);
     void drawPointAtAddress(unsigned char** p, unsigned int color);
